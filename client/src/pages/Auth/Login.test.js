@@ -42,6 +42,7 @@ window.matchMedia = window.matchMedia || function() {
 describe('Login Component', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        axios.get.mockResolvedValue({ data: { category: [] } });
     });
 
     it('renders login form', () => {
@@ -93,6 +94,7 @@ describe('Login Component', () => {
                 token: 'mockToken'
             }
         });
+
 
         const { getByPlaceholderText, getByText } = render(
             <MemoryRouter initialEntries={['/login']}>
