@@ -22,7 +22,8 @@ const CartPage = () => {
     try {
       let total = 0;
       cart?.map((item) => {
-        total = total + item.price;
+        // handle case where price might be missing or not a number
+        total = total + Number(item?.price ?? 0);
       });
       return total.toLocaleString("en-US", {
         style: "currency",
@@ -36,7 +37,10 @@ const CartPage = () => {
   const removeCartItem = (pid) => {
     try {
       let myCart = [...cart];
+      // find index of item to remove
       let index = myCart.findIndex((item) => item._id === pid);
+      // if item not found, do nothing
+      if (index === -1) return;
       myCart.splice(index, 1);
       setCart(myCart);
       localStorage.setItem("cart", JSON.stringify(myCart));
