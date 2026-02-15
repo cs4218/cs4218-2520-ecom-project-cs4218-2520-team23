@@ -330,48 +330,69 @@ export const productCategoryController = async (req, res) => {
 //token
 export const braintreeTokenController = async (req, res) => {
   try {
-    gateway.clientToken.generate({}, function (err, response) {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.send(response);
-      }
+    return gateway.clientToken.generate({}, (err, response) => {
+      if (err) return res.status(500).send(err);
+      return res.send(response);
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Braintree token generation failed" });
   }
 };
 
 //payment
 export const brainTreePaymentController = async (req, res) => {
   try {
-    const { nonce, cart } = req.body;
+    const { nonce, cart } = req.body || {};
+
+    // Basic validation (prevents NaN totals + missing data)
+    if (!nonce) return res.status(400).send({ error: "Missing payment nonce" });
+    if (!Array.isArray(cart)) return res.status(400).send({ error: "Cart must be an array" });
+    if (!req.user?._id) return res.status(401).send({ error: "Unauthorized" });
+
     let total = 0;
-    cart.map((i) => {
-      total += i.price;
-    });
-    let newTransaction = gateway.transaction.sale(
+    for (const item of cart) {
+      const price = Number(item?.price);
+      if (!Number.isFinite(price) || price < 0) {
+        return res.status(400).send({ error: "Invalid item price in cart" });
+      }
+      total += price;
+    }
+
+    // Optional: enforce non-negative total (empty cart => 0 is allowed)
+    if (!Number.isFinite(total) || total < 0) {
+      return res.status(400).send({ error: "Invalid total amount" });
+    }
+
+    return gateway.transaction.sale(
       {
-        amount: total,
+        amount: total.toFixed(2), // braintree expects a string/decimal-like amount
         paymentMethodNonce: nonce,
-        options: {
-          submitForSettlement: true,
-        },
+        options: { submitForSettlement: true },
       },
-      function (error, result) {
-        if (result) {
-          const order = new orderModel({
+      async (error, result) => {
+        try {
+          // Correct success check
+          if (error) return res.status(500).send(error);
+          if (!result || result.success !== true) {
+            return res.status(500).send(result?.message || "Payment failed");
+          }
+
+          await new orderModel({
             products: cart,
             payment: result,
             buyer: req.user._id,
           }).save();
-          res.json({ ok: true });
-        } else {
-          res.status(500).send(error);
+
+          return res.json({ ok: true });
+        } catch (e) {
+          console.log(e);
+          return res.status(500).send({ error: "Order creation failed" });
         }
       }
     );
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Payment processing failed" });
   }
 };
