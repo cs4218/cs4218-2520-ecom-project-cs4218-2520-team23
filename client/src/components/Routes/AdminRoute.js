@@ -22,7 +22,11 @@ export default function AdminRoute() {
         setOk(false);
       }
     };
-    if (auth?.token) authCheck();
+    if (auth?.token) {
+      authCheck();
+    } else {
+      setOk(false);
+    }
   }, [auth?.token]);
 
   return ok ? <Outlet /> : <Spinner />;
