@@ -48,7 +48,11 @@ describe("Register Component", () => {
 
   it("should register the user successfully", async () => {
     axios.post.mockResolvedValueOnce({ data: { success: true } });
+<<<<<<< HEAD
     axios.get.mockResolvedValueOnce({ data: { category: [] } });
+=======
+    axios.get.mockResolvedValueOnce({ data: { categories: {}} });
+>>>>>>> 9d97e402e0f5c2b5efdf3949c7a5234256eb4598
 
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={["/register"]}>
@@ -88,9 +92,15 @@ describe("Register Component", () => {
     );
   });
 
+<<<<<<< HEAD
   it("should display error message on failed registration", async () => {
     axios.post.mockRejectedValueOnce({ message: "User already exists" });
     axios.get.mockResolvedValueOnce({ data: { category: [] } });
+=======
+  it('should display error message on failed registration', async () => {
+    axios.post.mockRejectedValueOnce({ message: 'User already exists' });
+    axios.get.mockResolvedValueOnce({ data: {} });
+>>>>>>> 9d97e402e0f5c2b5efdf3949c7a5234256eb4598
 
     const { getByText, getByPlaceholderText } = render(
       <MemoryRouter initialEntries={["/register"]}>
