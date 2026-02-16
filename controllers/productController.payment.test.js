@@ -5,8 +5,8 @@ const flushPromises = () => new Promise((r) => setImmediate(r));
 function makeRes() {
   const res = {};
   res.status = jest.fn(() => res);
-  res.send = jest.fn(() => res);
-  res.json = jest.fn(() => res);
+  res.send = jest.fn(() => { res.headersSent = true; return res; });
+  res.json = jest.fn(() => { res.headersSent = true; return res; });
   return res;
 }
 
@@ -175,6 +175,21 @@ describe("payment controllers unit tests (Jest, ESM)", () => {
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.send).toHaveBeenCalledWith({ error: "Unauthorized" });
       expect(gatewayMock.transaction.sale).not.toHaveBeenCalled();
+    });
+    test("Robustness: braintree callback called twice => respond once", async () => {
+      const req = { body: { nonce: "n6", cart: [{ price: 10 }] }, user: { _id: "u6" } };
+      const res = makeRes();
+
+      gatewayMock.transaction.sale.mockImplementation((_payload, cb) => {
+        cb(null, { success: true, id: "t6" });
+        cb(null, { success: true, id: "t6_dup" }); // second call
+      });
+
+      await brainTreePaymentController(req, res);
+      await flushPromises();
+
+      expect(res.json).toHaveBeenCalledTimes(1);
+      expect(res.json).toHaveBeenCalledWith({ ok: true });
     });
   });
 });

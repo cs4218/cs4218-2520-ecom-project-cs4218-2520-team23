@@ -371,6 +371,9 @@ export const brainTreePaymentController = async (req, res) => {
         options: { submitForSettlement: true },
       },
       async (error, result) => {
+        // guard: if braintree calls callback twice, ignore the rest
+        if (res.headersSent) return;
+
         try {
           // Correct success check
           if (error) return res.status(500).send(error);
@@ -383,7 +386,8 @@ export const brainTreePaymentController = async (req, res) => {
             payment: result,
             buyer: req.user._id,
           }).save();
-
+           
+          if (res.headersSent) return
           return res.json({ ok: true });
         } catch (e) {
           console.log(e);
