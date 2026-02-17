@@ -28,12 +28,14 @@ Object.defineProperty(window, "localStorage", {
 	writable: true,
 });
 
+// Xinping, A0228445B
+
 describe("Contact Component", () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 		axios.get.mockResolvedValue({ data: { category: [] } });
 	});
-	it("renders page title correctly", async () => {
+	test("renders page title correctly", async () => {
 		const { getByText } = render(
 			<MemoryRouter>
 				<Contact />
@@ -44,7 +46,7 @@ describe("Contact Component", () => {
 		});
 	});
 
-	it("renders contact information correctly", async () => {
+	test("renders contact information correctly", async () => {
 		const { getByText } = render(
 			<MemoryRouter>
 				<Contact />
@@ -55,7 +57,7 @@ describe("Contact Component", () => {
 		});
 	});
 
-	it("renders contact image correctly", async () => {
+	test("renders contact image correctly", async () => {
 		const { getByAltText } = render(
 			<MemoryRouter>
 				<Contact />
@@ -66,7 +68,7 @@ describe("Contact Component", () => {
 		});
 	});
 
-	it("renders phone contact correctly", async () => {
+	test("renders phone contact correctly", async () => {
 		const { getByText } = render(
 			<MemoryRouter>
 				<Contact />
@@ -77,7 +79,7 @@ describe("Contact Component", () => {
 		});
 	});
 
-	it("renders toll free contact correctly", async () => {
+	test("renders toll free contact correctly", async () => {
 		const { getByText } = render(
 			<MemoryRouter>
 				<Contact />
@@ -89,7 +91,7 @@ describe("Contact Component", () => {
 	});
 
 	// Use regex + only check for the key part of the text, to improve resistance to refactoring.
-	it("should inform the user about 24/7 availability", async () => {
+	test("should inform the user about 24/7 availability", async () => {
 		render(
 			<MemoryRouter>
 				<Contact />
