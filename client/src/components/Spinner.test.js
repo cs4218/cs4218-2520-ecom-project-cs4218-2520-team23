@@ -1,10 +1,12 @@
+// Pan Xinping, A0228445B
+
 import React from "react";
 import { render, screen, act } from "@testing-library/react";
 import { MemoryRouter, useNavigate, useLocation } from "react-router-dom";
 import "@testing-library/jest-dom";
 import Spinner from "../components/Spinner";
 
-// 1. Mock the hooks from react-router-dom
+// Mock the hooks from react-router-dom
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: jest.fn(),
