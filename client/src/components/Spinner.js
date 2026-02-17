@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 const Spinner = ({ path = "login" }) => {
+  // Sets default loading time to 3 seconds
   const [count, setCount] = useState(3);
   const navigate = useNavigate();
   const location = useLocation();
@@ -9,6 +10,7 @@ const Spinner = ({ path = "login" }) => {
     const interval = setInterval(() => {
       setCount((prevValue) => --prevValue);
     }, 1000);
+    // Redirects to the specified path when count reaches 0, and passes the current location as state
     count === 0 && navigate(`/${path}`, {
         state: location.pathname,
       });
