@@ -45,11 +45,11 @@ export const createProductController = async (req, res) => {
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
     }
-    await products.save();
+    const savedProduct = await products.save(); // capture return value
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
-      products,
+      products: savedProduct, // send saved result
     });
   } catch (error) {
     console.log(error);
