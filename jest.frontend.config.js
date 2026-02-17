@@ -16,18 +16,21 @@ export default {
 		"\\.(css|scss)$": "identity-obj-proxy",
 	},
 
-	moduleDirectories: ['node_modules', 'client/node_modules'],
+	moduleDirectories: ["node_modules", "client/node_modules"],
 
 	// ignore all node_modules except styleMock (needed for css imports), and react-icons (needed for icon imports)
 	transformIgnorePatterns: ["/node_modules/(?!(styleMock\\.js|react-icons)/)"],
 
 	// only run these tests
 	// testMatch: ["<rootDir>/client/src/pages/Auth/*.test.js"],
-	testMatch: ["<rootDir>/client/src/pages/**/*.test.{js,jsx,ts,tsx}"],
+	testMatch: [
+		"<rootDir>/client/src/pages/**/*.test.{js,jsx,ts,tsx}",
+		"<rootDir>/client/src/components/**/*.test.{js,jsx,ts,tsx}",
+	],
 
 	// jest code coverage
 	collectCoverage: true,
-	collectCoverageFrom: ["client/src/pages/**/*.{js,jsx}"],
+	collectCoverageFrom: ["client/src/pages/**/*.{js,jsx}", "client/src/components/**/*.{js,jsx}"],
 	coverageThreshold: {
 		global: {
 			lines: 100,
