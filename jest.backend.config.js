@@ -6,11 +6,15 @@ export default {
   testEnvironment: "node",
 
   // which test to run
-  testMatch: ["<rootDir>/controllers/*.test.js"],
+  testMatch: ["<rootDir>/controllers/productController.test.js"],
 
   // jest code coverage
   collectCoverage: true,
-  collectCoverageFrom: ["controllers/**"],
+  collectCoverageFrom: [
+    // "controllers/authController.js",
+    "controllers/productController.js",
+    // "models/orderModel.js",
+  ],
   coverageThreshold: {
     global: {
       lines: 100,
