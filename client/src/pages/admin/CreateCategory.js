@@ -19,7 +19,8 @@ const CreateCategory = () => {
         name,
       });
       if (data?.success) {
-        toast.success(`${name} is created`);
+        // change to data.message to match backend response
+        toast.success(data.message);
         getAllCategory();
       } else {
         toast.error(data.message);
