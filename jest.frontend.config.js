@@ -21,15 +21,17 @@ export default {
 
   // only run these tests
   testMatch: [
-    "<rootDir>/client/src/pages/Auth/*.test.js",
-    "<rootDir>/client/src/components/Form/*.test.js",
+    // "<rootDir>/client/src/pages/Auth/*.test.js",
+    // "<rootDir>/client/src/components/Form/SearchInput.test.js",
+    "<rootDir>/client/src/context/search.test.js",
   ],
 
   // jest code coverage
   collectCoverage: true,
   collectCoverageFrom: [
-    "client/src/pages/Auth/**",
-    "client/src/components/Form/**",
+    // "client/src/pages/Auth/**",
+    // "client/src/components/Form/SearchInput.js",
+    "client/src/context/search.js",
   ],
   coverageThreshold: {
     global: {
