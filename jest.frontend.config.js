@@ -23,7 +23,8 @@ export default {
   testMatch: [
     // "<rootDir>/client/src/pages/Auth/*.test.js",
     // "<rootDir>/client/src/components/Form/SearchInput.test.js",
-    "<rootDir>/client/src/context/search.test.js",
+    // "<rootDir>/client/src/context/search.test.js",
+    "<rootDir>/client/src/pages/Search.test.js",
   ],
 
   // jest code coverage
@@ -31,7 +32,8 @@ export default {
   collectCoverageFrom: [
     // "client/src/pages/Auth/**",
     // "client/src/components/Form/SearchInput.js",
-    "client/src/context/search.js",
+    // "client/src/context/search.js",
+    "client/src/pages/Search.js",
   ],
   coverageThreshold: {
     global: {

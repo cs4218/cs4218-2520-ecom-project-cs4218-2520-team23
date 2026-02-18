@@ -3,10 +3,6 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { SearchProvider, useSearch } from "./search";
 
-/**
- * Unit tests only (no router/network).
- */
-
 describe("client/src/context/search.js (unit)", () => {
   // Liu Shixin, A0265144H
   test("useSearch outside provider returns undefined (consumer can detect missing provider)", () => {
