@@ -326,10 +326,6 @@ describe("CreateCategory", () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // Delete category
-  // -------------------------------------------------------------------------
-
   describe("handleDelete — delete category", () => {
     it("calls delete endpoint with correct category id", async () => {
       axios.delete.mockResolvedValue({ data: { success: true } });
