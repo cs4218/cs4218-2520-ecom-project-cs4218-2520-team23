@@ -3,9 +3,10 @@ import AdminMenu from "../../components/AdminMenu";
 import Layout from "./../../components/Layout";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const location = useLocation();
 
   //getall products
   const getAllProducts = async () => {
@@ -21,7 +22,7 @@ const Products = () => {
   //lifecycle method
   useEffect(() => {
     getAllProducts();
-  }, []);
+  }, [location.state?.refresh]);
   return (
     <Layout>
       <div className="row">
@@ -39,7 +40,7 @@ const Products = () => {
               >
                 <div className="card m-2" style={{ width: "18rem" }}>
                   <img
-                    src={`/api/v1/product/product-photo/${p._id}`}
+                    src={`/api/v1/product/product-photo/${p._id}?t=${location.state?.refresh || Date.now()}`}
                     className="card-img-top"
                     alt={p.name}
                   />
