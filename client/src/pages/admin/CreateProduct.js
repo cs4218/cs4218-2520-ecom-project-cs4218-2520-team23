@@ -18,7 +18,7 @@ const CreateProduct = () => {
   const [shipping, setShipping] = useState("");
   const [photo, setPhoto] = useState("");
 
-  //get all category
+  // get all category
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get("/api/v1/category/get-category");
@@ -26,8 +26,8 @@ const CreateProduct = () => {
         setCategories(data?.category);
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Something wwent wrong in getting catgeory");
+      console.error(error);
+      toast.error("Something went wrong in getting category");
     }
   };
 
@@ -35,7 +35,7 @@ const CreateProduct = () => {
     getAllCategory();
   }, []);
 
-  //create product function
+  // create product function
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
@@ -46,19 +46,22 @@ const CreateProduct = () => {
       productData.append("quantity", quantity);
       productData.append("photo", photo);
       productData.append("category", category);
-      const { data } = axios.post(
+      productData.append("shipping", shipping);
+
+      const { data } = await axios.post(
         "/api/v1/product/create-product",
-        productData
+        productData,
       );
+
       if (data?.success) {
-        toast.error(data?.message);
-      } else {
         toast.success("Product Created Successfully");
         navigate("/dashboard/admin/products");
+      } else {
+        toast.error(data?.message || "Failed to create product");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("something went wrong");
+      console.error(error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -95,6 +98,7 @@ const CreateProduct = () => {
                     type="file"
                     name="photo"
                     accept="image/*"
+                    aria-label="Upload Photo"
                     onChange={(e) => setPhoto(e.target.files[0])}
                     hidden
                   />
@@ -130,7 +134,6 @@ const CreateProduct = () => {
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
-
               <div className="mb-3">
                 <input
                   type="number"
@@ -152,7 +155,7 @@ const CreateProduct = () => {
               <div className="mb-3">
                 <Select
                   bordered={false}
-                  placeholder="Select Shipping "
+                  placeholder="Select Shipping"
                   size="large"
                   showSearch
                   className="form-select mb-3"
