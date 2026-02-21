@@ -49,7 +49,7 @@ const HomePage = () => {
 		}
 	};
 
-	//getTOtal COunt
+	//getTotal Count
 	const getTotal = async () => {
 		try {
 			const { data } = await axios.get("/api/v1/product/product-count");
@@ -86,13 +86,6 @@ const HomePage = () => {
 		}
 		setChecked(all);
 	};
-	useEffect(() => {
-		if (!checked.length || !radio.length) getAllProducts();
-	}, [checked.length, radio.length]);
-
-	useEffect(() => {
-		if (checked.length || radio.length) filterProduct();
-	}, [checked, radio]);
 
 	// Pan Xinping, A0228445B. Reset page when filters change to avoid loading page 2 of a 1-page filtered set
 	useEffect(() => {
@@ -137,9 +130,9 @@ const HomePage = () => {
 					<div className="d-flex flex-column">
 						<Radio.Group onChange={(e) => setRadio(e.target.value)}>
 							{Prices?.map((p) => (
-								<div key={p._id}>
-									<Radio value={p.array}>{p.name}</Radio>
-								</div>
+								<Radio key={p.array.join("-")} value={p.array}>
+									{p.name}
+								</Radio>
 							))}
 						</Radio.Group>
 					</div>
