@@ -226,7 +226,7 @@ In not particular order:
          - pages/Categories.test.js
 
       **Payment**  
-         - controllers/productController.js
+         - controllers/productController.payment.test.js
          - braintreeTokenController
          - brainTreePaymentController
 

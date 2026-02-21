@@ -1,4 +1,4 @@
-// Tests written by: Liu Yiyang, A0258121M
+// Liu Yiyang, A0258121M
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -126,7 +126,97 @@ describe('CategoryProduct Component', () => {
     });
   });
 
-  it('displays correct number of products found', async () => {
+  it('should fetch products with correct API endpoint', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: mockProducts
+      }
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-category/electronics');
+    });
+  });
+
+  it('should not fetch products when slug is undefined', () => {
+    render(
+      <MemoryRouter initialEntries={['/category']}>
+        <Routes>
+          <Route path="/category" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(axios.get).not.toHaveBeenCalled();
+  });
+
+  it('should handle API error gracefully', async () => {
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+    axios.get.mockRejectedValueOnce(new Error('API Error'));
+
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.any(Error));
+    });
+    consoleLogSpy.mockRestore();
+  });
+
+  it('should display zero products', async () => {
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: []
+      }
+    });
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('0 result found')).toBeInTheDocument();
+    });
+  });
+
+  it('should display one product', async () => {
+    const singleProduct = [mockProducts[0]];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: singleProduct
+      }
+    });
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('1 result found')).toBeInTheDocument();
+      expect(screen.getByText('Laptop')).toBeInTheDocument();
+    });
+  });
+
+  it('should display two products (BVA: typical)', async () => {
     axios.get.mockResolvedValueOnce({
       data: {
         category: mockCategory,
@@ -147,7 +237,34 @@ describe('CategoryProduct Component', () => {
     });
   });
 
-  it('renders all products in the category', async () => {
+  it('should display many products', async () => {
+    const manyProducts = Array.from({ length: 10 }, (_, i) => ({
+      _id: `prod${i}`,
+      name: `Product ${i}`,
+      slug: `product-${i}`,
+      description: 'Test product description',
+      price: 100 * i
+    }));
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: manyProducts
+      }
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('10 result found')).toBeInTheDocument();
+    });
+  });
+
+  it('should render all product names', async () => {
     axios.get.mockResolvedValueOnce({
       data: {
         category: mockCategory,
@@ -191,7 +308,7 @@ describe('CategoryProduct Component', () => {
     });
   });
 
-  it('truncates product descriptions to 60 characters', async () => {
+  it('should display product images with correct src attributes', async () => {
     axios.get.mockResolvedValueOnce({
       data: {
         category: mockCategory,
@@ -206,9 +323,55 @@ describe('CategoryProduct Component', () => {
         </Routes>
       </MemoryRouter>
     );
-
     await waitFor(() => {
-      expect(screen.getByText('A high-performance laptop with great battery life and proces...')).toBeInTheDocument();
+      const images = screen.getAllByRole('img');
+      expect(images[0]).toHaveAttribute('src', '/api/v1/product/product-photo/prod1');
+      expect(images[1]).toHaveAttribute('src', '/api/v1/product/product-photo/prod2');
+    });
+  });
+
+  it('should truncate long product descriptions to 60 characters', async () => {
+    const longDescProducts = [
+      { ...mockProducts[0], description: 'A high-performance laptop with great battery life and processing power' }
+    ];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: longDescProducts
+      }
+    });
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+      await waitFor(() => {
+        expect(screen.getByText('A high-performance laptop with great battery life and proces...')).toBeInTheDocument();
+      });
+    });
+
+  it('should display short descriptions without truncation (BVA)', async () => {
+    const shortDescProduct = [
+      { ...mockProducts[0], description: 'Short description' }
+    ];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: shortDescProduct
+      }
+    });
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('Short description...')).toBeInTheDocument();
     });
   });
 
@@ -260,11 +423,55 @@ describe('CategoryProduct Component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/product/laptop');
   });
 
-  it('displays product images with correct src', async () => {
+  it('should navigate to correct product for second item', async () => {
     axios.get.mockResolvedValueOnce({
       data: {
         category: mockCategory,
         products: mockProducts
+      }
+    });
+    
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('Smartphone')).toBeInTheDocument();
+    });
+    const buttons = screen.getAllByText('More Details');
+    fireEvent.click(buttons[1]);
+    expect(mockNavigate).toHaveBeenCalledWith('/product/smartphone');
+  });
+
+  it('should handle products with zero price', async () => {
+    const freeProduct = [{ ...mockProducts[0], price: 0 }];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: freeProduct
+      }
+    });
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('$0.00')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle products with very high prices', async () => {
+    const expensiveProduct = [{ ...mockProducts[0], price: 99999.99 }];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: expensiveProduct
       }
     });
 
@@ -275,55 +482,140 @@ describe('CategoryProduct Component', () => {
         </Routes>
       </MemoryRouter>
     );
-
     await waitFor(() => {
-      const images = screen.getAllByRole('img');
-      expect(images[0]).toHaveAttribute('src', '/api/v1/product/product-photo/prod1');
-      expect(images[1]).toHaveAttribute('src', '/api/v1/product/product-photo/prod2');
+      expect(screen.getByText('$99,999.99')).toBeInTheDocument();
     });
   });
 
-  it('handles empty products array', async () => {
+  it('should handle products with decimal prices', async () => {
+    const decimalPriceProduct = [{ ...mockProducts[0], price: 19.99 }];
     axios.get.mockResolvedValueOnce({
       data: {
         category: mockCategory,
+        products: decimalPriceProduct
+      }
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('$19.99')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle category with special characters in name', async () => {
+    const specialCategory = { ...mockCategory, name: 'Electronics & Gadgets' };
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: specialCategory,
+        products: mockProducts
+      }
+    });
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('Category - Electronics & Gadgets')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle products with empty description (BVA)', async () => {
+    const noDescProduct = [{ ...mockProducts[0], description: '' }];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: noDescProduct
+      }
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('Laptop')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle products with exactly 60 character description (BVA)', async () => {
+    const exactLengthDesc = 'A'.repeat(60);
+    const exactProduct = [{ ...mockProducts[0], description: exactLengthDesc }];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: exactProduct
+      }
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      expect(screen.getByText(`${exactLengthDesc}...`)).toBeInTheDocument();
+    });
+  });
+
+  it('should handle products with 61 character description (BVA: just over)', async () => {
+    const overLengthDesc = 'A'.repeat(61);
+    const overProduct = [{ ...mockProducts[0], description: overLengthDesc }];
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: mockCategory,
+        products: overProduct
+      }
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/category/electronics']}>
+        <Routes>
+          <Route path="/category/:slug" element={<CategoryProduct />} />
+        </Routes>
+      </MemoryRouter>
+    );
+    await waitFor(() => {
+      const displayed = screen.getByText(/^A+\.\.\./);  
+      expect(displayed.textContent).toHaveLength(63);
+    });
+  });
+
+  it('should fetch different category when slug changes', async () => {
+    const booksCategory = { _id: 'cat2', name: 'Books', slug: 'books' };
+    axios.get.mockResolvedValueOnce({
+      data: {
+        category: booksCategory,
         products: []
       }
     });
 
     render(
-      <MemoryRouter initialEntries={['/category/electronics']}>
+      <MemoryRouter initialEntries={['/category/books']}>
         <Routes>
           <Route path="/category/:slug" element={<CategoryProduct />} />
         </Routes>
       </MemoryRouter>
     );
-
     await waitFor(() => {
-      expect(screen.getByText('0 result found')).toBeInTheDocument();
+      expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-category/books');
     });
   });
 
-  it('handles API error gracefully', async () => {
-    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
-    axios.get.mockRejectedValueOnce(new Error('API Error'));
-
-    render(
-      <MemoryRouter initialEntries={['/category/electronics']}>
-        <Routes>
-          <Route path="/category/:slug" element={<CategoryProduct />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(consoleLogSpy).toHaveBeenCalledWith(expect.any(Error));
-    });
-
-    consoleLogSpy.mockRestore();
-  });
-
-  it('fetches products with correct API endpoint', async () => {
+  it('should handle slug with special characters', async () => {
     axios.get.mockResolvedValueOnce({
       data: {
         category: mockCategory,
@@ -332,27 +624,14 @@ describe('CategoryProduct Component', () => {
     });
 
     render(
-      <MemoryRouter initialEntries={['/category/electronics']}>
+      <MemoryRouter initialEntries={['/category/home-decor']}>
         <Routes>
           <Route path="/category/:slug" element={<CategoryProduct />} />
         </Routes>
       </MemoryRouter>
     );
-
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-category/electronics');
+      expect(axios.get).toHaveBeenCalledWith('/api/v1/product/product-category/home-decor');
     });
-  });
-
-  it('should not fetch products when slug is undefined', () => {
-    render(
-      <MemoryRouter initialEntries={['/category']}>
-        <Routes>
-          <Route path="/category" element={<CategoryProduct />} />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    expect(axios.get).not.toHaveBeenCalled();
   });
 });
