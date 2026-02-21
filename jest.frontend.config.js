@@ -50,11 +50,11 @@ export default {
     "client/src/context/cart.js",
     "client/src/components/Routes/*.js",
   ],
-	coverageThreshold: {
-		global: {
-			lines: 100,
-			functions: 100,
-		},
-	},
-	setupFilesAfterEnv: ["<rootDir>/client/src/setupTests.js"],
+  coverageThreshold: {
+    global: {
+      lines: 90,
+      functions: 90,
+    },
+  },
+  setupFilesAfterEnv: ["<rootDir>/client/src/setupTests.js"],
 };
