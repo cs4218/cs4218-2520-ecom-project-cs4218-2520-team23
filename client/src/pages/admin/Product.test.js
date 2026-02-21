@@ -33,6 +33,7 @@ jest.mock("react-router-dom", () => ({
       {children}
     </a>
   ),
+  useLocation: jest.fn(() => ({ pathname: "/dashboard/admin/products" })),
 }));
 
 const Products = require("./Products").default;
