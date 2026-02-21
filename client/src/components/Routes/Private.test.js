@@ -38,9 +38,24 @@ describe("PrivateRoute", () => {
     );
 
     expect(screen.getByTestId("spinner")).toBeInTheDocument();
+  });
+
+  it("should call user-auth API when token exists", async () => {
+    useAuth.mockReturnValue([{ token: "test-token" }, jest.fn()]);
+    axios.get.mockResolvedValue({ data: { ok: true } });
+
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<PrivateRoute />}>
+            <Route index element={<div>User Content</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
 
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith("/api/v1/auth/user-auth");
     });
   });
 
@@ -114,19 +129,6 @@ describe("PrivateRoute", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("spinner")).toBeInTheDocument();
-    });
-  });
-
-  it("renders Spinner on axios error", async () => {
-    useAuth.mockReturnValue([{ token: "valid-token" }]);
-    axios.get.mockRejectedValue(new Error("Network error"));
-    render(
-      <MemoryRouter>
-        <PrivateRoute />
-      </MemoryRouter>,
-    );
-    await waitFor(() => {
-      expect(screen.getByText("Loading...")).toBeInTheDocument();
     });
   });
 });

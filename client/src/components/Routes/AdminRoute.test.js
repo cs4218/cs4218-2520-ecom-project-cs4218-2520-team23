@@ -38,9 +38,24 @@ describe("AdminRoute", () => {
     );
 
     expect(screen.getByTestId("spinner")).toBeInTheDocument();
+  });
+
+  it("should call admin-auth API when token exists", async () => {
+    useAuth.mockReturnValue([{ token: "test-token" }, jest.fn()]);
+    axios.get.mockResolvedValue({ data: { ok: true } });
+
+    render(
+      <MemoryRouter>
+        <Routes>
+          <Route path="/" element={<AdminRoute />}>
+            <Route index element={<div>Admin Content</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
 
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalled();
+      expect(axios.get).toHaveBeenCalledWith("/api/v1/auth/admin-auth");
     });
   });
 
