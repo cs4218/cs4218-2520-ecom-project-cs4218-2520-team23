@@ -200,7 +200,7 @@ describe("controllers/productController.js (selected unit tests)", () => {
       // Assert
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
-        error: "photo is Required and should be less then 1mb",
+        error: "Photo should be less than 1MB",
       });
       expect(mockProductModel).not.toHaveBeenCalled();
       expect(mockProductSave).not.toHaveBeenCalled();
@@ -256,8 +256,7 @@ describe("controllers/productController.js (selected unit tests)", () => {
     });
 
     // Liu Shixin, A0265144H
-    test("success: no photo provided -> still saves product and returns 201", async () => {
-      // Arrange
+    test("validation: no photo provided -> 500 'Photo is Required' and does not save", async () => {
       const req = {
         fields: {
           name: "NoPhoto",
@@ -266,25 +265,19 @@ describe("controllers/productController.js (selected unit tests)", () => {
           category: "c",
           quantity: 2,
         },
-        files: {},
+        files: {}, // no photo
       };
       const res = makeRes();
 
-      mockSlugify.mockReturnValue("nophoto");
-      mockProductSave.mockResolvedValue({ _id: "p2" });
-
-      // Act
       await createProductController(req, res);
 
-      // Assert
-      expect(mockReadFileSync).not.toHaveBeenCalled();
-      expect(mockProductSave).toHaveBeenCalledTimes(1);
-      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.send).toHaveBeenCalledWith({ error: "Photo is Required" });
+      expect(mockProductSave).not.toHaveBeenCalled();
     });
 
     // Liu Shixin, A0265144H
     test("error path: save rejects -> responds 500 'Error in crearing product'", async () => {
-      // Arrange
       const req = {
         fields: {
           name: "n",
@@ -293,17 +286,16 @@ describe("controllers/productController.js (selected unit tests)", () => {
           category: "c",
           quantity: 2,
         },
-        files: {},
+        files: { photo: { size: 500000, path: "/tmp/p", type: "image/png" } }, // ← add a valid photo
       };
       const res = makeRes();
 
       mockSlugify.mockReturnValue("n");
-      mockProductSave.mockRejectedValue(new Error("boom"));
+      mockReadFileSync.mockReturnValue(Buffer.from("img"));
+      mockProductSave.mockRejectedValue(new Error("boom")); // ← this now actually gets hit
 
-      // Act
       await createProductController(req, res);
 
-      // Assert
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith(
         expect.objectContaining({
