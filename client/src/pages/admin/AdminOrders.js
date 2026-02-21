@@ -13,8 +13,8 @@ const AdminOrders = () => {
     "Not Process",
     "Processing",
     "Shipped",
-    "deliverd",
-    "cancel",
+    "Delivered",
+    "Cancelled",
   ]);
   const [orders, setOrders] = useState([]);
   const [auth, setAuth] = useAuth();

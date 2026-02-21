@@ -63,8 +63,8 @@ describe('Product Controller Tests under the "Product" feature', () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith({
         success: true,
-        counTotal: 2,
-        message: 'ALlProducts ',
+        countTotal: 2,
+        message: 'All Products',
         products: mockProducts,
       });
     });
@@ -84,8 +84,8 @@ describe('Product Controller Tests under the "Product" feature', () => {
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith({
         success: true,
-        counTotal: 0,
-        message: 'ALlProducts ',
+        countTotal: 0,
+        message: 'All Products',
         products: [],
       });
     });
@@ -108,8 +108,8 @@ describe('Product Controller Tests under the "Product" feature', () => {
 
       expect(res.send).toHaveBeenCalledWith({
         success: true,
-        counTotal: 12,
-        message: 'ALlProducts ',
+        countTotal: 12,
+        message: 'All Products',
         products: mockProducts,
       });
     });
@@ -130,7 +130,7 @@ describe('Product Controller Tests under the "Product" feature', () => {
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.send).toHaveBeenCalledWith({
         success: false,
-        message: 'Erorr in getting products',
+        message: 'Error in getting products',
         error: mockError.message,
       });
 
