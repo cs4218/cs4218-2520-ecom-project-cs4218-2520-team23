@@ -12,6 +12,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      BRAINTREE_MERCHANT_ID: ${{ secrets.BRAINTREE_MERCHANT_ID }}
+      BRAINTREE_PUBLIC_KEY: ${{ secrets.BRAINTREE_PUBLIC_KEY }}
+      BRAINTREE_PRIVATE_KEY: ${{ secrets.BRAINTREE_PRIVATE_KEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -19,7 +24,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "24"
+          node-version: "22"
 
       - name: Install dependencies
         run: npm install
@@ -29,5 +34,8 @@ jobs:
           cd client
           npm install
 
-      - name: Run Jest tests
+      - name: Run frontend tests
         run: npm run test:frontend
+
+      - name: Run backend tests
+        run: npm run test:backend
