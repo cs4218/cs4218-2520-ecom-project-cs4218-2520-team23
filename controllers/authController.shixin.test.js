@@ -96,7 +96,7 @@ describe("controllers/authController.js (selected unit tests)", () => {
 
       // Assert
       expect(res.json).toHaveBeenCalledWith({
-        error: "Passsword is required and 6 character long",
+        error: "Password is required and 6 character long",
       });
       expect(mockUserFindById).toHaveBeenCalledWith("u1");
       expect(mockHashPassword).not.toHaveBeenCalled();
@@ -194,7 +194,7 @@ describe("controllers/authController.js (selected unit tests)", () => {
       expect(res.send).toHaveBeenCalledWith(
         expect.objectContaining({
           success: false,
-          message: "Error WHile Update profile",
+          message: "Error While Updating profile",
           error: err,
         })
       );
@@ -240,7 +240,7 @@ describe("controllers/authController.js (selected unit tests)", () => {
       expect(res.send).toHaveBeenCalledWith(
         expect.objectContaining({
           success: false,
-          message: "Error WHile Geting Orders",
+          message: "Error While Getting Orders",
           error: err,
         })
       );
@@ -265,7 +265,7 @@ describe("controllers/authController.js (selected unit tests)", () => {
       expect(mockOrderFind).toHaveBeenCalledWith({});
       expect(q.populate).toHaveBeenNthCalledWith(1, "products", "-photo");
       expect(q.populate).toHaveBeenNthCalledWith(2, "buyer", "name");
-      expect(q.sort).toHaveBeenCalledWith({ createdAt: "-1" });
+      expect(q.sort).toHaveBeenCalledWith({ createdAt: -1 });
       expect(res.json).toHaveBeenCalledWith(orders);
     });
 
@@ -334,7 +334,7 @@ describe("controllers/authController.js (selected unit tests)", () => {
       expect(res.send).toHaveBeenCalledWith(
         expect.objectContaining({
           success: false,
-          message: "Error While Updateing Order",
+          message: "Error While Updating Order",
           error: err,
         })
       );
