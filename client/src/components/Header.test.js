@@ -1,27 +1,27 @@
 /**
  * Test written by Pan Xinping, A0228445B
- * I am using UI-focused component tests for the Header,
- * because Header behavior is driven by auth/cart/category state and user interactions (e.g., logout).
+ * I am using UI-focused component tests for Header because it is a state-driven navigation shell
+ * whose output changes based on authentication, user role, cart size, and category data.
+ *
  * Testing Principles Applied:
  *
  * 1. Equivalence Partitioning
- * - Auth state: Guest vs Logged-in user
- * - User role: Normal user vs Admin
- * - Cart state: Empty vs Non-empty
+ * - Auth state: Guest vs Authenticated user
+ * - Role state: Admin (role=1) vs Non-admin (role=0 or others)
+ * - Category state: Empty category list vs Populated category list
+ * - Cart state: Empty cart vs Non-empty cart
  *
  * 2. Boundary Value Analysis
- * - Cart size: 0 vs 2 (badge rendering and count visibility)
- * - Auth token presence: empty token vs valid token
+ * - Cart count boundary: 0 vs 2 items vs 99+ items (to check overflow logic)
+ * - Category list size boundary: 0 vs 1 vs 2 items
+ * - Role boundary: expected admin value (1) vs out-of-range value (e.g., 2)
  *
- * 3. State & Behaviour Testing
- * - Conditional UI rendering based on auth state and user role
- * - Route target validation for dashboard links
- * - Logout flow side effects on auth state, localStorage, and toast
+ * Testing Approaches Applied:
+ * 1. Dependency Mocking (Isolation)
+ * - Mocked useAuth, useCart, and useCategory to simulate application states.
+ * - Assert that navigation links contain the correct to or href attributes based on the data provided.
+ * - Instead of checking the real browser state, we verify that the logout function from our hook was called and that the toast service was invoked.
  *
- * 4. Side-Effect / Interaction Testing
- * - Hook-driven state mocking (`useAuth`, `useCart`, `useCategory`)
- * - Event handling for logout click
- * - External interaction validation (`localStorage.removeItem`, toast calls)
  **/
 
 import React from "react";
@@ -54,7 +54,7 @@ describe("Header Component", () => {
 		useCategory.mockReturnValue([]); // No categories
 	});
 
-	test("renders Login and Register links when user is not authenticated", () => {
+	test("user is not authenticated -> renders Login and Register links", () => {
 		// Arrange
 		useAuth.mockReturnValue([{ user: null, token: "" }, setAuthMock]);
 
@@ -64,13 +64,20 @@ describe("Header Component", () => {
 			</MemoryRouter>,
 		);
 
+		// Act
+		const loginLink = screen.getByRole("link", { name: /Login/i });
+		const registerLink = screen.getByRole("link", { name: /Register/i });
+
 		// Assert
-		expect(screen.getByText(/Login/i)).toBeInTheDocument();
-		expect(screen.getByText(/Register/i)).toBeInTheDocument();
+		expect(loginLink).toBeInTheDocument();
+		expect(registerLink).toBeInTheDocument();
+		expect(loginLink).toHaveAttribute("href", "/login");
+		expect(registerLink).toHaveAttribute("href", "/register");
 		expect(screen.queryByText(/Logout/i)).not.toBeInTheDocument();
+		expect(screen.queryByText(/Dashboard/i)).not.toBeInTheDocument();
 	});
 
-	test("renders User Name and Logout when authenticated", () => {
+	test("user is authenticated -> renders User Name and Logout", () => {
 		// Arrange
 		useAuth.mockReturnValue([{ user: { name: "John Doe", role: 0 }, token: "123" }, setAuthMock]);
 
@@ -83,9 +90,10 @@ describe("Header Component", () => {
 		// Assert
 		expect(screen.getByText("John Doe")).toBeInTheDocument();
 		expect(screen.queryByText(/Login/i)).not.toBeInTheDocument();
+		expect(screen.queryByText(/Register/i)).not.toBeInTheDocument();
 	});
 
-	test("navigates to Admin Dashboard when user role is 1", () => {
+	test("user role is 1 -> navigates to Admin Dashboard", () => {
 		// Arrange
 		useAuth.mockReturnValue([{ user: { name: "Admin", role: 1 }, token: "123" }, setAuthMock]);
 
@@ -102,9 +110,26 @@ describe("Header Component", () => {
 		expect(dashboardLink.closest("a")).toHaveAttribute("href", "/dashboard/admin");
 	});
 
-	test("navigates to User Dashboard when user role is 0", () => {
+	test("user role is 0 -> navigates to User Dashboard", () => {
 		// Arrange
 		useAuth.mockReturnValue([{ user: { name: "John Doe", role: 0 }, token: "123" }, setAuthMock]);
+
+		render(
+			<MemoryRouter>
+				<Header />
+			</MemoryRouter>,
+		);
+
+		// Act
+		const dashboardLink = screen.getByText(/Dashboard/i);
+
+		// Assert
+		expect(dashboardLink.closest("a")).toHaveAttribute("href", "/dashboard/user");
+	});
+
+	test("user role is neither 0 nor 1 -> navigates to User Dashboard", () => {
+		// Arrange
+		useAuth.mockReturnValue([{ user: { name: "Other Role", role: 2 }, token: "123" }, setAuthMock]);
 
 		render(
 			<MemoryRouter>
@@ -153,6 +178,26 @@ describe("Header Component", () => {
 		expect(screen.queryByRole("link", { name: /Books/i })).not.toBeInTheDocument();
 	});
 
+	test("1 category -> renders exactly one dynamic category link", () => {
+		// Arrange
+		useAuth.mockReturnValue([{ user: null, token: "" }, setAuthMock]);
+		useCategory.mockReturnValue([{ _id: "c1", name: "Electronics", slug: "electronics" }]);
+
+		render(
+			<MemoryRouter>
+				<Header />
+			</MemoryRouter>,
+		);
+
+		// Act
+		const allLinks = screen.getAllByRole("link");
+		const categoryLinks = allLinks.filter((link) => link.getAttribute("href")?.startsWith("/category/"));
+
+		// Assert
+		expect(categoryLinks).toHaveLength(1);
+		expect(screen.getByRole("link", { name: /Electronics/i })).toHaveAttribute("href", "/category/electronics");
+	});
+
 	test("2 categories -> renders links with correct routes", () => {
 		// Arrange
 		useAuth.mockReturnValue([{ user: null, token: "" }, setAuthMock]);
@@ -176,10 +221,9 @@ describe("Header Component", () => {
 		expect(booksLink).toHaveAttribute("href", "/category/books");
 	});
 
-	test("displays the correct number of items in the cart badge", () => {
+	test("always includes 'All Categories' link with correct route", () => {
 		// Arrange
-		useAuth.mockReturnValue([{ user: null }, setAuthMock]);
-		useCart.mockReturnValue([[{ id: 1 }, { id: 2 }]]); // 2 items in cart
+		useAuth.mockReturnValue([{ user: null, token: "" }, setAuthMock]);
 
 		render(
 			<MemoryRouter>
@@ -187,12 +231,14 @@ describe("Header Component", () => {
 			</MemoryRouter>,
 		);
 
-    // Assert
-		// Ant Design Badge renders the count as text
-		expect(screen.getByText("2")).toBeInTheDocument();
+		// Act
+		const allCategoriesLink = screen.getByRole("link", { name: /All Categories/i });
+
+		// Assert
+		expect(allCategoriesLink).toHaveAttribute("href", "/categories");
 	});
 
-	test("displays zero in cart badge when cart is empty", () => {
+	test("0 items in cart -> displays zero in cart badge", () => {
 		// Arrange
 		useAuth.mockReturnValue([{ user: null, token: "" }, setAuthMock]);
 		useCart.mockReturnValue([[]]);
@@ -205,6 +251,54 @@ describe("Header Component", () => {
 
 		// Assert
 		expect(screen.getByText("0")).toBeInTheDocument();
+	});
+
+	test("2 items in cart -> displays 2 in the cart badge", () => {
+		// Arrange
+		useAuth.mockReturnValue([{ user: null }, setAuthMock]);
+		useCart.mockReturnValue([[{ id: 1 }, { id: 2 }]]); // 2 items in cart
+
+		render(
+			<MemoryRouter>
+				<Header />
+			</MemoryRouter>,
+		);
+
+		// Assert
+		expect(screen.getByText("2")).toBeInTheDocument();
+	});
+
+	test("99+ items in cart -> displays 99+ in cart badge", () => {
+		// Arrange
+		useAuth.mockReturnValue([{ user: null, token: "" }, setAuthMock]);
+		const largeCart = Array.from({ length: 120 }, (_, index) => ({ id: index + 1 }));
+		useCart.mockReturnValue([largeCart]);
+
+		render(
+			<MemoryRouter>
+				<Header />
+			</MemoryRouter>,
+		);
+
+		// Assert
+		expect(screen.getByText("99+")).toBeInTheDocument();
+	});
+
+	test("renders Cart nav link with correct route", () => {
+		// Arrange
+		useAuth.mockReturnValue([{ user: null, token: "" }, setAuthMock]);
+
+		render(
+			<MemoryRouter>
+				<Header />
+			</MemoryRouter>,
+		);
+
+		// Act
+		const cartLink = screen.getByRole("link", { name: /Cart/i });
+
+		// Assert
+		expect(cartLink).toHaveAttribute("href", "/cart");
 	});
 
 	test("calls logout functions correctly", () => {
@@ -222,14 +316,18 @@ describe("Header Component", () => {
 
 		// Act
 		const logoutLink = screen.getByText(/Logout/i);
+		expect(logoutLink.closest("a")).toHaveAttribute("href", "/login");
 		fireEvent.click(logoutLink);
 
 		// Assert
+		expect(setAuthMock).toHaveBeenCalledTimes(1);
 		expect(setAuthMock).toHaveBeenCalledWith({
 			user: null,
 			token: "",
 		});
+		expect(localStorage.removeItem).toHaveBeenCalledTimes(1);
 		expect(localStorage.removeItem).toHaveBeenCalledWith("auth");
+		expect(toast.success).toHaveBeenCalledTimes(1);
 		expect(toast.success).toHaveBeenCalledWith("Logout Successfully");
 	});
 });

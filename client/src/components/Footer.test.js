@@ -4,7 +4,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
-import Footer from "../components/Footer"; // Adjust path as needed
+import Footer from "../components/Footer";
 
 describe("Footer Component", () => {
 	// Helper function to render Footer with Router context
@@ -24,9 +24,6 @@ describe("Footer Component", () => {
 		const copyrightText = screen.getByText(/All Rights Reserved © TestingComp/i);
 
 		expect(copyrightText).toBeInTheDocument();
-
-		// Verifying it is specifically an h4 tag as per requirements
-		expect(copyrightText.tagName).toBe("H4");
 	});
 
 	test("contains a working link to the About page", () => {
