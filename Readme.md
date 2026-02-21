@@ -153,26 +153,27 @@ In not particular order:
       **Protected Routes**
          - AdminRoute.test.js
          - authMiddleware.test.js
-         - authHelper.js 
+         - authHelper.test.js 
+         - controllers/authController.test.js
 
       **Registration**  
-         - pages/Auth/Register.js
+         - pages/Auth/Register.test.js
 
       **Login**
-         - pages/Auth/Login.js
-
-      **Admin Actions**
-         - components/AdminMenu.js
-         - pages/admin/AdminDashboard.js
+         - pages/Auth/Login.test.js
 
       **General**
          - Private.test.js 
+
+      **Admin Actions**
+         - createCategory.test.js
+         - createProduct.test.js
+         - updateProduct.test.js
 
    2. Liu Shixin
 
       **Order** 
          - pages/user/Orders.js
-         - controllers/authController.js
          
       **Profile**  
          - pages/user/Profile.js
@@ -195,26 +196,31 @@ In not particular order:
    3. Liu Yiyang
 
       **Admin View Orders**
-         - pages/admin/AdminOrders.js
+         - pages/admin/AdminOrders.test.js
 
       **General**
-         - components/UserMenu.js
-         - pages/user/Dashboard.js
+         - components/UserMenu.test.js
+         - pages/user/Dashboard.test.js
          - components/Routes/Private.js
+      
+      **Model**
+         - models/UserModel.test.js
+         - models/ProductModel.test.js
 
       **Product**
-         - controllers/productController.js
-         - getProductController
-         - getSingleProductController
-         - productPhotoController
-         - productFiltersController
-         - productCountController
-         - productListController
-         - searchProductController
-         - realtedProductController
-         - productCategoryController
+         - pages/categoryProduct.test.js
+         - controllers/productController.test.js
+            - getProductController
+            - getSingleProductController
+            - productPhotoController
+            - productFiltersController
+            - productCountController
+            - productListController
+            - searchProductController
+            - realtedProductController
+            - productCategoryController
 
-   4. Ng Hong Ray<br>
+   4. Ng Hong Ray
 
       **Cart**  
          - context/cart.test.js
@@ -227,25 +233,25 @@ In not particular order:
 
       **Payment**  
          - controllers/productController.payment.test.js
-         - braintreeTokenController
-         - brainTreePaymentController
+            - braintreeTokenController
+            - brainTreePaymentController
 
    5. Pan Xinping
 
       **Contact**
-         - pages/Contact.js 
+         - pages/Contact.test.js 
 
       **Policy** 
-         - pages/Policy.js
+         - pages/Policy.test.js
 
       **General** 
-         - components/Footer.js
-         - components/Header.js
-         - components/Layout.js
-         - components/Spinner.js
-         - pages/About.js
-         - pages/Pagenotfound.js
-         - config/db.js
+         - components/Footer.test.js
+         - components/Header.test.js
+         - components/Layout.test.js
+         - components/Spinner.test.js
+         - pages/About.test.js
+         - pages/Pagenotfound.test.js
+         - config/db.test.js
 
       **Home** 
-         - pages/Homepage.js
+         - pages/Homepage.test.js
