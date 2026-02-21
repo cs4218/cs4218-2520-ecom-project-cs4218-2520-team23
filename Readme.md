@@ -144,3 +144,114 @@ To begin unit testing with Jest in your project, follow these steps:
      ```bash
      npm run test
      ```
+
+## 6. Areas of Responsibility
+In not particular order:
+
+   1. Dong Cheng-Yu
+
+      **Protected Routes**
+         - AdminRoute.test.js
+         - authMiddleware.test.js
+         - authHelper.test.js 
+         - controllers/authController.test.js
+
+      **Registration**  
+         - pages/Auth/Register.test.js
+
+      **Login**
+         - pages/Auth/Login.test.js
+
+      **General**
+         - Private.test.js 
+
+      **Admin Actions**
+         - createCategory.test.js
+         - createProduct.test.js
+         - updateProduct.test.js
+
+   2. Liu Shixin
+
+      **Order** 
+         - pages/user/Orders.js
+         
+      **Profile**  
+         - pages/user/Profile.js
+
+      **Admin View Users**
+         - pages/admin/Users.js
+
+      **Search**
+         - components/Form/SearchInput.js
+         - context/search.js
+         - pages/Search.js
+
+      **Admin View Products**
+         - pages/admin/Products.js
+         - controllers/productController.js
+         - createProductController
+         - deleteProductController
+         - updateProductController
+
+   3. Liu Yiyang
+
+      **Admin View Orders**
+         - pages/admin/AdminOrders.test.js
+
+      **General**
+         - components/UserMenu.test.js
+         - pages/user/Dashboard.test.js
+         - components/Routes/Private.js
+      
+      **Model**
+         - models/UserModel.test.js
+         - models/ProductModel.test.js
+
+      **Product**
+         - pages/categoryProduct.test.js
+         - controllers/productController.test.js
+            - getProductController
+            - getSingleProductController
+            - productPhotoController
+            - productFiltersController
+            - productCountController
+            - productListController
+            - searchProductController
+            - realtedProductController
+            - productCategoryController
+
+   4. Ng Hong Ray
+
+      **Cart**  
+         - context/cart.test.js
+         - pages/CartPage.test.js
+
+      **Category**
+         - categoryController.test.js 
+         - hooks/useCategory.test.js
+         - pages/Categories.test.js
+
+      **Payment**  
+         - controllers/productController.payment.test.js
+            - braintreeTokenController
+            - brainTreePaymentController
+
+   5. Pan Xinping
+
+      **Contact**
+         - pages/Contact.test.js 
+
+      **Policy** 
+         - pages/Policy.test.js
+
+      **General** 
+         - components/Footer.test.js
+         - components/Header.test.js
+         - components/Layout.test.js
+         - components/Spinner.test.js
+         - pages/About.test.js
+         - pages/Pagenotfound.test.js
+         - config/db.test.js
+
+      **Home** 
+         - pages/Homepage.test.js

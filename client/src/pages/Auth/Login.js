@@ -1,3 +1,4 @@
+// Improved by Dong Cheng-Yu, A0262348B
 import React, { useState } from "react";
 import Layout from "./../../components/Layout";
 import axios from "axios";
@@ -10,47 +11,46 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useAuth();
-  
 
   const navigate = useNavigate();
   const location = useLocation();
-  
 
   // form function
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.post("/api/v1/auth/login", {
-        email,
+        email: email.trim(),
         password,
       });
-      if (res && res.data.success) {
-        toast.success(res.data && res.data.message, {
-            duration: 5000,
-            icon: "🙏",
-            style: {
-              background: "green",
-              color: "white",
-            },
-          });
-        setAuth({
-            ...auth,
-            user: res.data.user,
-            token: res.data.token,
+      if (res?.data?.success) {
+        const authData = {
+          ...(auth || {}),
+          user: res.data.user,
+          token: res.data.token,
+        };
+        toast.success(res?.data?.message || "Login successful", {
+          duration: 5000,
+          icon: "🙏",
+          style: {
+            background: "green",
+            color: "white",
+          },
         });
-        localStorage.setItem("auth", JSON.stringify(res.data));
+        setAuth(authData);
+        localStorage.setItem("auth", JSON.stringify(authData));
         navigate(location.state || "/");
       } else {
-        toast.error(res.data.message);
+        toast.error(res?.data?.message || "Login failed");
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
   return (
     <Layout title="Login - Ecommerce App">
-      <div className="form-container " style={{ minHeight: "90vh" }}>
+      <div className="form-container" style={{ minHeight: "90vh" }}>
         <form onSubmit={handleSubmit}>
           <h4 className="title">LOGIN FORM</h4>
 
@@ -62,7 +62,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="form-control"
               id="exampleInputEmail1"
-              placeholder="Enter Your Email "
+              placeholder="Enter Your Email"
               required
             />
           </div>
