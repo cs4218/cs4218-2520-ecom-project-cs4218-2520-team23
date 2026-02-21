@@ -86,7 +86,7 @@ describe('Test AdminOrders Component', () => {
       _id: 'order1',
       status: 'Processing',
       buyer: { name: 'John Doe' },
-      createAt: new Date('2024-01-15'),
+      createdAt: new Date('2024-01-15'),
       payment: { success: true },
       products: [
         {
@@ -107,7 +107,7 @@ describe('Test AdminOrders Component', () => {
       _id: 'order2',
       status: 'Shipped',
       buyer: { name: 'Jane Smith' },
-      createAt: new Date('2024-01-10'),
+      createdAt: new Date('2024-01-10'),
       payment: { success: false },
       products: [
         {
@@ -355,6 +355,36 @@ describe('Test AdminOrders Component', () => {
 
     await waitFor(() => {
       expect(screen.getByText('This is a test product descrip')).toBeInTheDocument();
+    });
+  });
+
+  it('displays createdAt timestamp in relative format', async () => {
+    const recentOrder = {
+      _id: 'order3',
+      status: 'Processing',
+      buyer: { name: 'Test User' },
+      createdAt: new Date('2024-01-20T10:00:00'),
+      payment: { success: true },
+      products: [
+        {
+          _id: 'product4',
+          name: 'Product 4',
+          description: 'Test description',
+          price: 50
+        }
+      ]
+    };
+
+    axios.get.mockResolvedValueOnce({ data: [recentOrder] });
+
+    render(
+      <MemoryRouter>
+        <AdminOrders />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByText(/ago|seconds|minutes|hours|days|months|years/i).length).toBeGreaterThan(0);
     });
   });
 });
