@@ -516,6 +516,20 @@ describe('Product Controller Tests under the "Product" feature', () => {
       });
     });
 
+    it('should handle regular amount of products', async () => {
+      const mockQuery = {
+        estimatedDocumentCount: jest.fn().mockResolvedValue(10),
+      };
+      productModel.find.mockReturnValue(mockQuery);
+
+      await productCountController(req, res);
+
+      expect(res.send).toHaveBeenCalledWith({
+        success: true,
+        total: 10,
+      });
+    });
+
     it('should handle large product count', async () => {
       const mockQuery = {
         estimatedDocumentCount: jest.fn().mockResolvedValue(1000000),

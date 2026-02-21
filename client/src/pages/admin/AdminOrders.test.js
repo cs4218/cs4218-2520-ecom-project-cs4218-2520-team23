@@ -1,4 +1,4 @@
-// Tests written by: Liu Yiyang, A0258121M
+// Liu Yiyang, A0258121M
 import React from 'react';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import axios from 'axios';
