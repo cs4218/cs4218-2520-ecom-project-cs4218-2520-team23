@@ -330,48 +330,79 @@ export const productCategoryController = async (req, res) => {
 //token
 export const braintreeTokenController = async (req, res) => {
   try {
-    gateway.clientToken.generate({}, function (err, response) {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.send(response);
-      }
+    return gateway.clientToken.generate({}, (err, response) => {
+      if (err) return res.status(500).send(err);
+      return res.send(response);
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Braintree token generation failed" });
   }
 };
 
 //payment
 export const brainTreePaymentController = async (req, res) => {
   try {
-    const { nonce, cart } = req.body;
+    const { nonce, cart } = req.body || {};
+
+    // Validation (prevents NaN totals + missing data)
+    if (!nonce) return res.status(400).send({ error: "Missing payment nonce" });
+    if (!Array.isArray(cart)) return res.status(400).send({ error: "Cart must be an array" });
+    if (!req.user?._id) return res.status(401).send({ error: "Unauthorized" });
+
     let total = 0;
-    cart.map((i) => {
-      total += i.price;
-    });
-    let newTransaction = gateway.transaction.sale(
+    for (const item of cart) {
+      const price = Number(item?.price);
+      if (!Number.isFinite(price) || price < 0) {
+        return res.status(400).send({ error: "Invalid item price in cart" });
+      }
+      total += price;
+    }
+
+    // enforce non-negative total (empty cart > 0 is allowed)
+    // just in case eventhough we already have item-level validation, we do this as a sanity check before calling the payment gateway
+    if (!Number.isFinite(total) || total < 0) {
+      return res.status(400).send({ error: "Invalid total amount" });
+    }
+
+    // guard against empty cart (total=0 is allowed, but we don't want to process payments with no items)
+    if (cart.length === 0) {
+      return res.status(400).send({ error: "Cart cannot be empty" });
+    }
+
+    return gateway.transaction.sale(
       {
-        amount: total,
+        amount: total.toFixed(2), // expects a string/decimal-like amount
         paymentMethodNonce: nonce,
-        options: {
-          submitForSettlement: true,
-        },
+        options: { submitForSettlement: true },
       },
-      function (error, result) {
-        if (result) {
-          const order = new orderModel({
+      async (error, result) => {
+        // guard: if braintree calls callback twice, ignore the rest
+        if (res.headersSent) return;
+
+        try {
+          // Correct success check
+          if (error) return res.status(500).send(error);
+          if (!result || result.success !== true) {
+            return res.status(500).send(result?.message || "Payment failed");
+          }
+
+          await new orderModel({
             products: cart,
             payment: result,
             buyer: req.user._id,
           }).save();
-          res.json({ ok: true });
-        } else {
-          res.status(500).send(error);
+           
+          if (res.headersSent) return
+          return res.json({ ok: true });
+        } catch (e) {
+          console.log(e);
+          return res.status(500).send({ error: "Order creation failed" });
         }
       }
     );
   } catch (error) {
     console.log(error);
+    return res.status(500).send({ error: "Payment processing failed" });
   }
 };

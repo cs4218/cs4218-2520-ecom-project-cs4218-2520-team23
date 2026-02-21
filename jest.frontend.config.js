@@ -22,15 +22,34 @@ export default {
 	transformIgnorePatterns: ["/node_modules/(?!(styleMock\\.js|react-icons)/)"],
 
 	// only run these tests
-	// testMatch: ["<rootDir>/client/src/pages/Auth/*.test.js"],
 	testMatch: [
-		"<rootDir>/client/src/pages/**/*.test.{js,jsx,ts,tsx}",
+    "<rootDir>/client/src/**/*.test.js",
+    "<rootDir>/client/src/hooks/useCategory.test.js",
+    "<rootDir>/client/src/pages/Categories.test.js",
+    "<rootDir>/client/src/pages/CartPage.test.js",
+    "<rootDir>/client/src/context/cart.test.js",
+    "<rootDir>/client/src/pages/**/*.test.{js,jsx,ts,tsx}",
 		"<rootDir>/client/src/components/**/*.test.{js,jsx,ts,tsx}",
-	],
+  ],
 
 	// jest code coverage
 	collectCoverage: true,
-	collectCoverageFrom: ["client/src/pages/**/*.{js,jsx}", "client/src/components/**/*.{js,jsx}"],
+	collectCoverageFrom: [
+    "client/src/pages/**/*.{js,jsx}",
+    "client/src/components/**/*.js",
+    "client/src/pages/Auth/Login.js",
+    "client/src/pages/Auth/Register.js",
+    "client/src/pages/admin/*.js",
+    "client/src/pages/user/Dashboard.js",
+    "client/src/pages/CategoryProduct.js",
+    "client/src/pages/ProductDetails.js",
+    "client/src/components/UserMenu.js",
+    "client/src/hooks/useCategory.js",
+    "client/src/pages/Categories.js",
+    "client/src/pages/CartPage.js",
+    "client/src/context/cart.js",
+    "client/src/components/Routes/*.js",
+  ],
 	coverageThreshold: {
 		global: {
 			lines: 100,

@@ -144,3 +144,108 @@ To begin unit testing with Jest in your project, follow these steps:
      ```bash
      npm run test
      ```
+
+## 6. Areas of Responsibility
+In not particular order:
+
+   1. Dong Cheng-Yu
+
+      **Protected Routes**
+         - AdminRoute.test.js
+         - authMiddleware.test.js
+         - authHelper.js 
+
+      **Registration**  
+         - pages/Auth/Register.js
+
+      **Login**
+         - pages/Auth/Login.js
+
+      **Admin Actions**
+         - components/AdminMenu.js
+         - pages/admin/AdminDashboard.js
+
+      **General**
+         - Private.test.js 
+
+   2. Liu Shixin
+
+      **Order** 
+         - pages/user/Orders.js
+         - controllers/authController.js
+         
+      **Profile**  
+         - pages/user/Profile.js
+
+      **Admin View Users**
+         - pages/admin/Users.js
+
+      **Search**
+         - components/Form/SearchInput.js
+         - context/search.js
+         - pages/Search.js
+
+      **Admin View Products**
+         - pages/admin/Products.js
+         - controllers/productController.js
+         - createProductController
+         - deleteProductController
+         - updateProductController
+
+   3. Liu Yiyang
+
+      **Admin View Orders**
+         - pages/admin/AdminOrders.js
+
+      **General**
+         - components/UserMenu.js
+         - pages/user/Dashboard.js
+         - components/Routes/Private.js
+
+      **Product**
+         - controllers/productController.js
+         - getProductController
+         - getSingleProductController
+         - productPhotoController
+         - productFiltersController
+         - productCountController
+         - productListController
+         - searchProductController
+         - realtedProductController
+         - productCategoryController
+
+   4. Ng Hong Ray<br>
+
+      **Cart**  
+         - context/cart.test.js
+         - pages/CartPage.test.js
+
+      **Category**
+         - categoryController.test.js 
+         - hooks/useCategory.test.js
+         - pages/Categories.test.js
+
+      **Payment**  
+         - controllers/productController.js
+         - braintreeTokenController
+         - brainTreePaymentController
+
+   5. Pan Xinping
+
+      **Contact**
+         - pages/Contact.js 
+
+      **Policy** 
+         - pages/Policy.js
+
+      **General** 
+         - components/Footer.js
+         - components/Header.js
+         - components/Layout.js
+         - components/Spinner.js
+         - pages/About.js
+         - pages/Pagenotfound.js
+         - config/db.js
+
+      **Home** 
+         - pages/Homepage.js
