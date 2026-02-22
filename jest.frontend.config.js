@@ -45,6 +45,7 @@ export default {
     "client/src/context/cart.js",
     "client/src/components/Routes/*.js",
     "client/src/pages/Contact.js",
+    "client/src/pages/HomePage.js",
   ],
   coverageThreshold: {
     global: {
