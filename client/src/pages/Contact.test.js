@@ -26,7 +26,11 @@ import Contact from "./Contact";
 import { MemoryRouter } from "react-router-dom";
 
 // Mock Layout to avoid nesting issues
-jest.mock("../components/Layout", () => ({ children }) => <div>{children}</div>);
+jest.mock("../components/Layout", () => ({ children, title }) => (
+	<div data-testid="mock-layout" data-title={title}>
+		{children}
+	</div>
+));
 
 // Mock react-icons to avoid rendering issues
 jest.mock("react-icons/bi", () => ({
@@ -42,6 +46,17 @@ jest.mock("react-icons/bi", () => ({
 }));
 
 describe("Contact Page", () => {
+	test("passes the correct SEO title to the Layout component", () => {
+		render(
+			<MemoryRouter>
+				<Contact />
+			</MemoryRouter>,
+		);
+		const layout = screen.getByTestId("mock-layout");
+		// Verify the 'title' prop was passed correctly
+		expect(layout).toHaveAttribute("data-title", "Contact us");
+	});
+
 	test("renders the main heading", () => {
 		render(
 			<MemoryRouter>

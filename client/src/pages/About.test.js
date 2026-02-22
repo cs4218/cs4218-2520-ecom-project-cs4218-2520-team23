@@ -1,9 +1,8 @@
+// Xinping, A0228445B
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import About from "./About";
-
-// Xinping, A0228445B
 
 // Mocking the Layout component to isolate the About component
 // This allows us to verify the props passed to Layout without rendering its internals
@@ -18,7 +17,7 @@ jest.mock("./../components/Layout", () => {
 });
 
 describe("About Page Component", () => {
-	test("should pass the correct title prop to the Layout component", () => {
+	test("passes the correct SEO title prop to the Layout component", () => {
 		render(<About />);
 		const layoutElement = screen.getByTestId("mock-layout");
 
@@ -26,7 +25,7 @@ describe("About Page Component", () => {
 		expect(layoutElement).toHaveAttribute("data-title", "About us - Ecommerce app");
 	});
 
-	test("should render the main descriptive text about products", () => {
+	test("renders the main descriptive text about products", () => {
 		render(<About />);
 		const descriptionText = screen.getByText(/electronics, fashion, and books/i);
 
@@ -34,16 +33,16 @@ describe("About Page Component", () => {
 		expect(descriptionText).toHaveClass("text-justify");
 	});
 
-	test("should render the about image with correct source and alt text", () => {
+	test("renders the about image with correct source and alt text", () => {
 		render(<About />);
 		const image = screen.getByRole("img");
 
 		// Verify both the path and the accessibility alt tag
 		expect(image).toHaveAttribute("src", "/images/about.jpeg");
-		expect(image).toHaveAttribute("alt", "contactus");
+		expect(image).toHaveAttribute("alt", "aboutus");
 	});
 
-	test("should have the correct Bootstrap grid classes for layout", () => {
+	test("has the correct Bootstrap grid classes for layout", () => {
 		render(<About />);
 
 		// Testing specific UI structure for responsive design

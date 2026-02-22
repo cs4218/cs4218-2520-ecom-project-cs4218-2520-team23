@@ -1,3 +1,5 @@
+// Xinping, A0228445B
+
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
@@ -12,8 +14,6 @@ jest.mock("./../components/Layout", () => {
 		</div>
 	);
 });
-
-// Xinping, A0228445B
 
 describe("Policy Page Component", () => {
 	test("renders without crashing (Smoke Test)", () => {

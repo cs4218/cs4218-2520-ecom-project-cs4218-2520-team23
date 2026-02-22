@@ -115,6 +115,21 @@ describe("Layout Component", () => {
 		expect(helmet.querySelector('meta[name="author"]')).toHaveAttribute("content", "Techinfoyt");
 	});
 
+	test("falls back to default SEO values when non-string metadata props are passed", () => {
+		render(
+			<Layout title={null} description={123} keywords={[]} author={{}}>
+				Content
+			</Layout>,
+		);
+
+		const helmet = screen.getByTestId("mock-helmet");
+
+		expect(helmet.querySelector("title")).toHaveTextContent("Ecommerce app - shop now");
+		expect(helmet.querySelector('meta[name="description"]')).toHaveAttribute("content", "mern stack project");
+		expect(helmet.querySelector('meta[name="keywords"]')).toHaveAttribute("content", "mern,react,node,mongodb");
+		expect(helmet.querySelector('meta[name="author"]')).toHaveAttribute("content", "Techinfoyt");
+	});
+
 	test("renders UTF-8 charset meta tag", () => {
 		render(<Layout>Content</Layout>);
 		const helmet = screen.getByTestId("mock-helmet");
