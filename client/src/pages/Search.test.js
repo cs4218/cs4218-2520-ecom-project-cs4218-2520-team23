@@ -1,3 +1,4 @@
+// Liu Shixin, A0265144H
 // client/src/pages/Search.test.js
 import React from "react";
 import { render, screen } from "@testing-library/react";

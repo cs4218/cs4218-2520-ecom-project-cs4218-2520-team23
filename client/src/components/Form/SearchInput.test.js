@@ -1,3 +1,4 @@
+// Liu Shixin, A0265144H
 // client/src/components/Form/SearchInput.test.js
 import { jest } from "@jest/globals";
 import React from "react";
