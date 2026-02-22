@@ -34,7 +34,6 @@ const HomePage = () => {
 
 	useEffect(() => {
 		getAllCategory();
-		getTotal();
 	}, []);
 	//get products
 	const getAllProducts = async () => {
@@ -59,22 +58,22 @@ const HomePage = () => {
 		}
 	};
 
-	const loadMore = useCallback(async () => {
+	useEffect(() => {
+		if (page === 1) return;
+		loadMore();
+	}, [page]);
+	//load more
+	const loadMore = async () => {
 		try {
 			setLoading(true);
 			const { data } = await axios.get(`/api/v1/product/product-list/${page}`);
 			setLoading(false);
-			setProducts((prev) => [...prev, ...data?.products]);
+			setProducts([...products, ...data?.products]);
 		} catch (error) {
 			console.log(error);
 			setLoading(false);
 		}
-	}, [page]);
-
-	useEffect(() => {
-		if (page === 1) return;
-		loadMore();
-	}, [page, loadMore]);
+	};
 
 	// filter by cat
 	const handleFilter = (value, id) => {
@@ -86,16 +85,18 @@ const HomePage = () => {
 		}
 		setChecked(all);
 	};
-
 	// Pan Xinping, A0228445B. Reset page when filters change to avoid loading page 2 of a 1-page filtered set
 	useEffect(() => {
 		setPage(1);
 		if (checked.length || radio.length) filterProduct();
-		else getAllProducts();
+		else {
+			getAllProducts();
+			getTotal();
+		}
 		// eslint-disable-next-line
 	}, [checked, radio]);
 
-	//get filterd product
+	//get filtered product
 	const filterProduct = async () => {
 		try {
 			const { data } = await axios.post("/api/v1/product/product-filters", {
@@ -103,9 +104,10 @@ const HomePage = () => {
 				radio,
 			});
 			setProducts(data?.products);
+
 			// Pan Xinping, A0228445B: The total count should also update to reflect the number of products that match the current filters.
 			// This ensures that the "Load More" button behaves correctly based on the filtered results.
-			setTotal(data?.total || 0);
+			setTotal(data?.products?.length || 0);
 		} catch (error) {
 			console.log(error);
 		}
@@ -128,6 +130,7 @@ const HomePage = () => {
 					{/* price filter */}
 					<h4 className="text-center mt-4">Filter By Price</h4>
 					<div className="d-flex flex-column">
+						{/* Pan Xinping, A0228445B. Update keys to resolve bug. */}
 						<Radio.Group onChange={(e) => setRadio(e.target.value)}>
 							{Prices?.map((p) => (
 								<Radio key={p.array.join("-")} value={p.array}>
@@ -199,7 +202,8 @@ const HomePage = () => {
 									"Loading ..."
 								) : (
 									<>
-										Load more <AiOutlineReload />
+										{" "}
+										Load More <AiOutlineReload />
 									</>
 								)}
 							</button>
