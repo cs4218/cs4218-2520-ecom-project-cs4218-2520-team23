@@ -8,18 +8,18 @@ import { useNavigate } from "react-router-dom";
 
 jest.mock("axios");
 jest.mock("react-hot-toast", () => ({
-  success: jest.fn(),
-  error: jest.fn(),
+	success: jest.fn(),
+	error: jest.fn(),
 }));
 
 jest.mock("../../components/Layout", () => {
-  return function MockLayout({ children }) {
-    return <div>{children}</div>;
-  };
+	return function MockLayout({ children }) {
+		return <div>{children}</div>;
+	};
 });
 
 jest.mock("react-router-dom", () => ({
-  useNavigate: jest.fn(),
+	useNavigate: jest.fn(),
 }));
 
 describe("Register", () => {
