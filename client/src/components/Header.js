@@ -61,7 +61,8 @@ const Header = () => {
                     </Link>
                   </li>
                   {categories?.map((c) => (
-                    <li>
+                    // Pan Xinping, A0228445B. Added key to avoid React warnings.
+                    <li key={c._id || c.slug}>
                       <Link
                         className="dropdown-item"
                         to={`/category/${c.slug}`}

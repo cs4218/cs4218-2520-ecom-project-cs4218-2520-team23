@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices";
@@ -188,6 +188,7 @@ const HomePage = () => {
 							</div>
 						))}
 					</div>
+					{/* Change the condition to ensure it only shows when products exist and we haven't hit the total count yet */}
 					<div className="m-2 p-3">
 						{products && products.length > 0 && products.length < total && (
 							<button

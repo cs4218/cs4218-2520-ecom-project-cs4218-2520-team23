@@ -14,7 +14,7 @@ const About = () => {
         </div>
         <div className="col-md-4">
           <p className="text-justify mt-2">
-            Add text
+            We sell a wide range of products, including electronics, fashion, and books.
           </p>
         </div>
       </div>
