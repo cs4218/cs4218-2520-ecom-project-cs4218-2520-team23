@@ -1,3 +1,4 @@
+// Liu Yiyang, A0258121M
 jest.mock("braintree", () => ({
   BraintreeGateway: jest.fn().mockImplementation(() => ({
     clientToken: { generate: jest.fn() },
@@ -23,7 +24,6 @@ import categoryModel from "../models/categoryModel.js";
 jest.mock("../models/productModel.js");
 jest.mock("../models/categoryModel.js");
 
-// Liu Yiyang, A0258121M
 describe('Product Controller Tests under the "Product" feature', () => {
   let req, res;
 

@@ -1,3 +1,4 @@
+// Liu Shixin, A0265144H
 // client/src/pages/admin/Products.test.js
 import { jest } from "@jest/globals";
 import React from "react";
