@@ -133,8 +133,15 @@ describe("HomePage Component Logic", () => {
 		expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
 	});
 
-	test("displays categories fetched from the API in the filter section", async () => {
-		// Arrange: Render the component
+	test("categories -> API returns 0 categories -> displays 0 categories", async () => {
+		// Arrange: Isolate API responses for this test only
+		axios.get.mockImplementation((url) => {
+			if (url.includes("get-category")) return Promise.resolve({ data: { success: true, category: [] } });
+			if (url.includes("product-count")) return Promise.resolve({ data: { total: 1 } });
+			if (url.includes("product-list")) return Promise.resolve({ data: { products: mockProducts } });
+			return Promise.reject(new Error("not found"));
+		});
+
 		await act(async () => {
 			render(
 				<BrowserRouter>
@@ -143,11 +150,68 @@ describe("HomePage Component Logic", () => {
 			);
 		});
 
-		// Act: Wait for categories to load
+		// Act
+		await screen.findByText(/Product 1/i);
+
+		// Assert
+		expect(screen.queryAllByRole("checkbox")).toHaveLength(0);
+	});
+
+	test("categories -> API returns 1 category -> displays 1 category", async () => {
+		// Arrange: Isolate API responses for this test only
+		axios.get.mockImplementation((url) => {
+			if (url.includes("get-category"))
+				return Promise.resolve({ data: { success: true, category: [{ _id: "cat1", name: "Electronics" }] } });
+			if (url.includes("product-count")) return Promise.resolve({ data: { total: 1 } });
+			if (url.includes("product-list")) return Promise.resolve({ data: { products: mockProducts } });
+			return Promise.reject(new Error("not found"));
+		});
+
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+
+		// Act
 		const categoryCheckbox = await screen.findByRole("checkbox", { name: /electronics/i });
 
-		// Assert: Category is displayed
+		// Assert
 		expect(categoryCheckbox).toBeInTheDocument();
+		expect(screen.getAllByRole("checkbox")).toHaveLength(1);
+	});
+
+	test("categories -> API returns 10 categories -> displays 10 categories", async () => {
+		// Arrange: Isolate API responses for this test only
+		const tenCategories = Array.from({ length: 10 }, (_, index) => ({
+			_id: `cat${index + 1}`,
+			name: `Category ${index + 1}`,
+		}));
+
+		axios.get.mockImplementation((url) => {
+			if (url.includes("get-category"))
+				return Promise.resolve({ data: { success: true, category: tenCategories } });
+			if (url.includes("product-count")) return Promise.resolve({ data: { total: 1 } });
+			if (url.includes("product-list")) return Promise.resolve({ data: { products: mockProducts } });
+			return Promise.reject(new Error("not found"));
+		});
+
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+
+		// Act
+		await screen.findByRole("checkbox", { name: /^category 1$/i });
+
+		// Assert
+		expect(screen.getAllByRole("checkbox")).toHaveLength(10);
+		expect(screen.getByRole("checkbox", { name: /category 10/i })).toBeInTheDocument();
 	});
 
 	test("displays products with correct details in the grid", async () => {
@@ -171,76 +235,8 @@ describe("HomePage Component Logic", () => {
 		expect(screen.getByText("ADD TO CART")).toBeInTheDocument();
 	});
 
-	// --- Data Fetching and API Calls ---
-	test("handles API errors for category fetching gracefully", async () => {
-		// Arrange: Mock error for categories and render
-		axios.get.mockImplementationOnce((url) => {
-			if (url.includes("get-category")) return Promise.reject(new Error("Network error"));
-			return Promise.resolve({ data: { total: 1, products: mockProducts } });
-		});
-		const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-		await act(async () => {
-			render(
-				<BrowserRouter>
-					<HomePage />
-				</BrowserRouter>,
-			);
-		});
-		await screen.findByText(/Product 1/i);
-		expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
-		expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
-		consoleSpy.mockRestore();
-	});
-
-	test("handles API errors for product count fetching gracefully", async () => {
-		axios.get.mockImplementation((url) => {
-			if (url.includes("product-count")) return Promise.reject(new Error("Count error"));
-			if (url.includes("get-category"))
-				return Promise.resolve({ data: { success: true, category: mockCategories } });
-			if (url.includes("product-list")) return Promise.resolve({ data: { products: mockProducts } });
-			return Promise.reject(new Error("not found"));
-		});
-		const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-		await act(async () => {
-			render(
-				<BrowserRouter>
-					<HomePage />
-				</BrowserRouter>,
-			);
-		});
-		await screen.findByText(/Product 1/i);
-		expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
-		expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
-		consoleSpy.mockRestore();
-	});
-
-	test("handles API errors for product list fetching gracefully", async () => {
-		axios.get.mockImplementation((url) => {
-			if (url.includes("product-list")) return Promise.reject(new Error("List error"));
-			if (url.includes("get-category"))
-				return Promise.resolve({ data: { success: true, category: mockCategories } });
-			if (url.includes("product-count")) return Promise.resolve({ data: { total: 1 } });
-			return Promise.reject(new Error("not found"));
-		});
-		const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
-		await act(async () => {
-			render(
-				<BrowserRouter>
-					<HomePage />
-				</BrowserRouter>,
-			);
-		});
-
-		// Act: Attempt to find products (should not appear)
-		await waitFor(() => expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error)));
-
-		// Assert: No products displayed due to error
-		expect(screen.queryByText(/Product 1/i)).not.toBeInTheDocument();
-		consoleSpy.mockRestore();
-	});
-
 	// --- Filtering Logic ---
-	test("triggers filter API when a category is checked", async () => {
+	test("filtering -> 1 category is checked -> triggers filter API correctly", async () => {
 		// Arrange: Mock the filter API response and render the component
 		axios.post.mockResolvedValue({ data: { products: [] } });
 		await act(async () => {
@@ -264,42 +260,8 @@ describe("HomePage Component Logic", () => {
 		});
 	});
 
-	test("sends correct price array to API when a price radio is selected", async () => {
-		// Arrange: Mock the filter API response and render the component
-		axios.post.mockResolvedValue({
-			data: {
-				products: [{ _id: "2", name: "Filtered Product", price: 25, description: "Fits range", slug: "fp" }],
-			},
-		});
-		await act(async () => {
-			render(
-				<BrowserRouter>
-					<HomePage />
-				</BrowserRouter>,
-			);
-		});
-
-		// Act: Select a price radio button
-		const priceRadio = await screen.findByLabelText(/\$20 to 39/i);
-		fireEvent.click(priceRadio);
-
-		// Assert: Check that the filter API was called with correct radio array
-		await waitFor(() => {
-			expect(axios.post).toHaveBeenCalledWith(
-				"/api/v1/product/product-filters",
-				expect.objectContaining({
-					radio: [20, 39],
-				}),
-			);
-		});
-
-		// Assert: Check that the filtered product is displayed
-		expect(await screen.findByText("Filtered Product")).toBeInTheDocument();
-	});
-
-	test("applies category filter when checkboxes are checked and unchecked", async () => {
+	test("filtering -> 1 checkbox checked and unchecked -> applies category filter correctly", async () => {
 		// Arrange: Mock filter response
-		// axios.post.mockResolvedValue({ data: { products: [] } });
 		await act(async () => {
 			render(
 				<BrowserRouter>
@@ -316,14 +278,24 @@ describe("HomePage Component Logic", () => {
 			}),
 		);
 
+		// Reset call history so the uncheck path is isolated
+		axios.post.mockClear();
+		axios.get.mockClear();
+
 		fireEvent.click(checkbox); // Uncheck
 		await waitFor(() => {
-			// Assert: Filter is not applied again, only called once
-			expect(axios.post).toHaveBeenCalledTimes(1);
+			// Assert: Filter API is not used when filters are cleared
+			expect(axios.post).not.toHaveBeenCalled();
+		});
+
+		await waitFor(() => {
+			// Assert: Unchecking reloads the broader unfiltered results
+			expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-list/1");
+			expect(axios.get).toHaveBeenCalledWith("/api/v1/product/product-count");
 		});
 	});
 
-	test("triggers filter API with multiple categories when multiple checkboxes are checked", async () => {
+	test("filtering -> 2 checkboxes checked -> triggers filter API with multiple categories", async () => {
 		// Arrange: Mock multiple categories and filter response
 		const multipleCategories = [
 			{ _id: "cat1", name: "Electronics" },
@@ -360,7 +332,146 @@ describe("HomePage Component Logic", () => {
 		});
 	});
 
-	test("clears filters and reloads all products when RESET FILTERS is clicked", async () => {
+	test("filtering -> 2 checkboxes checked, then 1 unchecked -> remains filtered by the remaining category", async () => {
+		// Arrange
+		const multipleCategories = [
+			{ _id: "cat1", name: "Electronics" },
+			{ _id: "cat2", name: "Books" },
+		];
+		axios.get.mockImplementation((url) => {
+			if (url.includes("get-category"))
+				return Promise.resolve({ data: { success: true, category: multipleCategories } });
+			if (url.includes("product-count")) return Promise.resolve({ data: { total: 2 } });
+			if (url.includes("product-list")) return Promise.resolve({ data: { products: mockProducts } });
+			return Promise.reject(new Error("not found"));
+		});
+		axios.post.mockResolvedValue({ data: { products: mockProducts } });
+
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+
+		const checkbox1 = await screen.findByRole("checkbox", { name: /electronics/i });
+		const checkbox2 = await screen.findByRole("checkbox", { name: /books/i });
+
+		// Act: Select both categories
+		fireEvent.click(checkbox1);
+		fireEvent.click(checkbox2);
+
+		await waitFor(() => {
+			expect(axios.post).toHaveBeenCalledWith("/api/v1/product/product-filters", {
+				checked: ["cat1", "cat2"],
+				radio: [],
+			});
+		});
+
+		// Act: Uncheck one category
+		fireEvent.click(checkbox1);
+
+		// Assert: Still filtered by the remaining checked category
+		await waitFor(() => {
+			expect(axios.post).toHaveBeenCalledWith("/api/v1/product/product-filters", {
+				checked: ["cat2"],
+				radio: [],
+			});
+		});
+	});
+
+	test("filtering -> selects a price radio -> sends correct price array to API", async () => {
+		// Arrange: Mock the filter API response and render the component
+		axios.post.mockResolvedValue({
+			data: {
+				products: [{ _id: "2", name: "Filtered Product", price: 25, description: "Fits range", slug: "fp" }],
+			},
+		});
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+
+		// Act: Select a price radio button
+		const priceRadio = await screen.findByLabelText(/\$20 to 39/i);
+		fireEvent.click(priceRadio);
+
+		// Assert: Check that the filter API was called with correct radio array
+		await waitFor(() => {
+			expect(axios.post).toHaveBeenCalledWith(
+				"/api/v1/product/product-filters",
+				expect.objectContaining({
+					radio: [20, 39],
+				}),
+			);
+		});
+
+		// Assert: Check that the filtered product is displayed
+		expect(await screen.findByText("Filtered Product")).toBeInTheDocument();
+	});
+
+	test("filtering -> 2 categories + 1 price radio -> returns correctly filtered product list", async () => {
+		// Arrange
+		const multipleCategories = [
+			{ _id: "cat1", name: "Electronics" },
+			{ _id: "cat2", name: "Books" },
+		];
+		const unfilteredProductsWithDummies = [
+			...mockProducts,
+			{ _id: "4", name: "Out of Price Range Product", price: 150, description: "Too expensive", slug: "opr" },
+			{ _id: "5", name: "Wrong Category Product", price: 30, description: "Wrong category", slug: "wcp" },
+		];
+		const combinedFilteredProducts = [
+			{ _id: "3", name: "Combo Filter Product", price: 30, description: "Matches both filters", slug: "cfp" },
+		];
+
+		axios.get.mockImplementation((url) => {
+			if (url.includes("get-category"))
+				return Promise.resolve({ data: { success: true, category: multipleCategories } });
+			if (url.includes("product-count")) return Promise.resolve({ data: { total: 1 } });
+			if (url.includes("product-list"))
+				return Promise.resolve({ data: { products: unfilteredProductsWithDummies } });
+			return Promise.reject(new Error("not found"));
+		});
+		axios.post.mockResolvedValue({ data: { products: combinedFilteredProducts } });
+
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+
+		const checkbox1 = await screen.findByRole("checkbox", { name: /electronics/i });
+		const checkbox2 = await screen.findByRole("checkbox", { name: /books/i });
+		const priceRadio = await screen.findByLabelText(/\$20 to 39/i);
+
+		// Act
+		fireEvent.click(checkbox1);
+		fireEvent.click(checkbox2);
+		fireEvent.click(priceRadio);
+
+		// Assert: final combined payload is sent
+		await waitFor(() => {
+			expect(axios.post).toHaveBeenCalledWith("/api/v1/product/product-filters", {
+				checked: ["cat1", "cat2"],
+				radio: [20, 39],
+			});
+		});
+
+		// Assert: filtered product list is rendered
+		expect(await screen.findByText("Combo Filter Product")).toBeInTheDocument();
+		expect(screen.queryByText("Product 1")).not.toBeInTheDocument();
+		expect(screen.queryByText("Out of Price Range Product")).not.toBeInTheDocument();
+		expect(screen.queryByText("Wrong Category Product")).not.toBeInTheDocument();
+	});
+
+	test("filtering -> clears filters and reloads all products when RESET FILTERS is clicked", async () => {
 		// Arrange: Mock window.location.reload
 		delete window.location;
 		window.location = { reload: jest.fn() };
@@ -379,7 +490,7 @@ describe("HomePage Component Logic", () => {
 		expect(window.location.reload).toHaveBeenCalled();
 	});
 
-	test("does not fetch filtered products if no filters are applied", async () => {
+	test("filtering -> does not fetch filtered products if no filters are applied", async () => {
 		// Arrange: Render without filters
 		await act(async () => {
 			render(
@@ -397,7 +508,7 @@ describe("HomePage Component Logic", () => {
 	});
 
 	// --- Pagination and Loading More ---
-	test("loads more products when Load More button is clicked", async () => {
+	test("pagination -> loads more products when Load More button is clicked", async () => {
 		// Arrange: Mock more products and higher total
 		const moreProducts = [{ _id: "2", name: "Product 2", price: 200, description: "Desc 2", slug: "p2" }];
 		axios.get.mockImplementation((url) => {
@@ -423,7 +534,7 @@ describe("HomePage Component Logic", () => {
 		expect(await screen.findByText("Product 2")).toBeInTheDocument();
 	});
 
-	test("hides Load More button when all products are loaded", async () => {
+	test("pagination -> hides Load More button when all products are loaded", async () => {
 		// Arrange: Total equals loaded
 		axios.get.mockImplementation((url) => {
 			if (url.includes("product-count")) return Promise.resolve({ data: { total: 1 } });
@@ -445,57 +556,7 @@ describe("HomePage Component Logic", () => {
 		expect(screen.queryByRole("button", { name: /loadmore/i })).not.toBeInTheDocument();
 	});
 
-	// --- User Interactions (Cart and Navigation) ---
-	test("adds product to cart and updates localStorage", async () => {
-		await act(async () => {
-			render(
-				<BrowserRouter>
-					<HomePage />
-				</BrowserRouter>,
-			);
-		});
-		const addToCartBtn = await screen.findByText("ADD TO CART");
-		fireEvent.click(addToCartBtn);
-
-		// Assert: Check that setCart was called
-		expect(mockSetCart).toHaveBeenCalled();
-
-		// Assert: Check that localStorage was updated
-		expect(localStorage.setItem).toHaveBeenCalledWith("cart", expect.stringContaining("Product 1"));
-	});
-
-	test("navigates to product details on button click", async () => {
-		await act(async () => {
-			render(
-				<BrowserRouter>
-					<HomePage />
-				</BrowserRouter>,
-			);
-		});
-		const detailsBtn = await screen.findByRole("button", { name: /more details/i });
-		fireEvent.click(detailsBtn);
-
-		// Assert: Check that navigate was called with correct path
-		expect(mockNavigate).toHaveBeenCalledWith("/product/p1");
-	});
-
-	test("displays toast notification when adding to cart", async () => {
-		await act(async () => {
-			render(
-				<BrowserRouter>
-					<HomePage />
-				</BrowserRouter>,
-			);
-		});
-		const addToCartBtn = await screen.findByText("ADD TO CART");
-		fireEvent.click(addToCartBtn);
-
-		// Assert: Toast called
-		expect(require("react-hot-toast").success).toHaveBeenCalledWith("Item Added to cart");
-	});
-
-	// --- State Management and Effects ---
-	test("resets page to 1 when filters change", async () => {
+	test("pagination -> resets page to 1 when filters change", async () => {
 		// Arrange: Load more first
 		const moreProducts = [{ _id: "2", name: "Product 2", price: 200, description: "Desc 2", slug: "p2" }];
 		axios.get.mockImplementation((url) => {
@@ -526,6 +587,55 @@ describe("HomePage Component Logic", () => {
 		await waitFor(() => expect(axios.post).toHaveBeenCalled());
 	});
 
+	// --- User Interactions (Cart and Navigation) ---
+	test("user interactions -> adds product to cart and updates localStorage", async () => {
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+		const addToCartBtn = await screen.findByText("ADD TO CART");
+		fireEvent.click(addToCartBtn);
+
+		// Assert: Check that setCart was called
+		expect(mockSetCart).toHaveBeenCalled();
+
+		// Assert: Check that localStorage was updated
+		expect(localStorage.setItem).toHaveBeenCalledWith("cart", expect.stringContaining("Product 1"));
+	});
+
+	test("user interactions -> navigates to product details on button click", async () => {
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+		const detailsBtn = await screen.findByRole("button", { name: /more details/i });
+		fireEvent.click(detailsBtn);
+
+		// Assert: Check that navigate was called with correct path
+		expect(mockNavigate).toHaveBeenCalledWith("/product/p1");
+	});
+
+	test("user interactions -> displays toast notification when adding to cart", async () => {
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+		const addToCartBtn = await screen.findByText("ADD TO CART");
+		fireEvent.click(addToCartBtn);
+
+		// Assert: Toast called
+		expect(require("react-hot-toast").success).toHaveBeenCalledWith("Item Added to cart");
+	});
+
 	// --- Edge Cases and Error Handling ---
 	test("handles empty product list gracefully", async () => {
 		// Arrange: Mock empty products
@@ -552,14 +662,57 @@ describe("HomePage Component Logic", () => {
 		expect(screen.getByText("All Products")).toBeInTheDocument();
 	});
 
-	test("handles empty categories list gracefully", async () => {
-		// Arrange: Mock empty categories
+	test("errors -> handles API errors for category fetching gracefully", async () => {
+		// Arrange: Mock error for categories and render
+		axios.get.mockImplementationOnce((url) => {
+			if (url.includes("get-category")) return Promise.reject(new Error("Network error"));
+			return Promise.resolve({ data: { total: 1, products: mockProducts } });
+		});
+		const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+		await screen.findByText(/Product 1/i);
+		expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
+		expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
+		consoleSpy.mockRestore();
+	});
+
+	test("errors -> handles API errors for product count fetching gracefully", async () => {
 		axios.get.mockImplementation((url) => {
-			if (url.includes("get-category")) return Promise.resolve({ data: { success: true, category: [] } });
+			if (url.includes("product-count")) return Promise.reject(new Error("Count error"));
+			if (url.includes("get-category"))
+				return Promise.resolve({ data: { success: true, category: mockCategories } });
 			if (url.includes("product-list")) return Promise.resolve({ data: { products: mockProducts } });
+			return Promise.reject(new Error("not found"));
+		});
+		const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+		await act(async () => {
+			render(
+				<BrowserRouter>
+					<HomePage />
+				</BrowserRouter>,
+			);
+		});
+		await screen.findByText(/Product 1/i);
+		expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
+		expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
+		consoleSpy.mockRestore();
+	});
+
+	test("errors -> handles API errors for product list fetching gracefully", async () => {
+		axios.get.mockImplementation((url) => {
+			if (url.includes("product-list")) return Promise.reject(new Error("List error"));
+			if (url.includes("get-category"))
+				return Promise.resolve({ data: { success: true, category: mockCategories } });
 			if (url.includes("product-count")) return Promise.resolve({ data: { total: 1 } });
 			return Promise.reject(new Error("not found"));
 		});
+		const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
 		await act(async () => {
 			render(
 				<BrowserRouter>
@@ -568,15 +721,15 @@ describe("HomePage Component Logic", () => {
 			);
 		});
 
-		// Act: Wait for products
-		await screen.findByText(/Product 1/i);
+		// Act: Attempt to find products (should not appear)
+		await waitFor(() => expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error)));
 
-		// Assert: Products display, no categories
-		expect(screen.getByText(/Product 1/i)).toBeInTheDocument();
-		expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+		// Assert: No products displayed due to error
+		expect(screen.queryByText(/Product 1/i)).not.toBeInTheDocument();
+		consoleSpy.mockRestore();
 	});
 
-	test("handles network errors during any API call gracefully", async () => {
+	test("errors -> handles network errors during any API call gracefully", async () => {
 		// Arrange: Mock all to reject
 		axios.get.mockRejectedValue(new Error("Network error"));
 		const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {});
