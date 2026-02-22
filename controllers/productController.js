@@ -34,10 +34,10 @@ export const createProductController = async (req, res) => {
         return res.status(500).send({ error: "Category is Required" });
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
-      case photo && photo.size > 1000000:
-        return res
-          .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
+      case !photo:
+        return res.status(500).send({ error: "Photo is Required" });
+      case photo.size > 1000000:
+        return res.status(500).send({ error: "Photo should be less than 1MB" });
     }
 
     const products = new productModel({ ...req.fields, slug: slugify(name) });
@@ -45,11 +45,11 @@ export const createProductController = async (req, res) => {
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
     }
-    await products.save();
+    const savedProduct = await products.save(); // capture return value
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
-      products,
+      products: savedProduct, // send saved result
     });
   } catch (error) {
     console.log(error);

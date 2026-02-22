@@ -146,112 +146,140 @@ To begin unit testing with Jest in your project, follow these steps:
      ```
 
 ## 6. Areas of Responsibility
+
 In not particular order:
 
-   1. Dong Cheng-Yu
+1.  Dong Cheng-Yu
 
-      **Protected Routes**
-         - AdminRoute.test.js
-         - authMiddleware.test.js
-         - authHelper.test.js 
-         - controllers/authController.test.js
+    **Protected Routes**
 
-      **Registration**  
-         - pages/Auth/Register.test.js
+    - AdminRoute.test.js
+    - authMiddleware.test.js
+    - authHelper.test.js
+    - controllers/authController.test.js
 
-      **Login**
-         - pages/Auth/Login.test.js
+    **Registration**
 
-      **General**
-         - Private.test.js 
+    - pages/Auth/Register.test.js
 
-      **Admin Actions**
-         - createCategory.test.js
-         - createProduct.test.js
-         - updateProduct.test.js
+    **Login**
 
-   2. Liu Shixin
+    - pages/Auth/Login.test.js
 
-      **Order** 
-         - pages/user/Orders.js
-         
-      **Profile**  
-         - pages/user/Profile.js
+    **General**
 
-      **Admin View Users**
-         - pages/admin/Users.js
+    - Private.test.js
 
-      **Search**
-         - components/Form/SearchInput.js
-         - context/search.js
-         - pages/Search.js
+    **Admin Actions**
 
-      **Admin View Products**
-         - pages/admin/Products.js
-         - controllers/productController.js
-         - createProductController
-         - deleteProductController
-         - updateProductController
+    - createCategory.test.js
+    - createProduct.test.js
+    - updateProduct.test.js
 
-   3. Liu Yiyang
+2.  Liu Shixin
 
-      **Admin View Orders**
-         - pages/admin/AdminOrders.test.js
+    **Admin View Products**
 
-      **General**
-         - components/UserMenu.test.js
-         - pages/user/Dashboard.test.js
-         - components/Routes/Private.js
-      
-      **Model**
-         - models/UserModel.test.js
-         - models/ProductModel.test.js
+    - pages/admin/Products.test.js
+    - controllers/productController.part1.test.js
+      - createProductController
+      - deleteProductController
+      - updateProductController
 
-      **Product**
-         - pages/categoryProduct.test.js
-         - controllers/productController.test.js
-            - getProductController
-            - getSingleProductController
-            - productPhotoController
-            - productFiltersController
-            - productCountController
-            - productListController
-            - searchProductController
-            - realtedProductController
-            - productCategoryController
+    **Order**
 
-   4. Ng Hong Ray
+    - pages/user/Orders.test.js
+    - controllers/authController.shixin.test.js
+      - updateProfileController
+      - getOrdersController
+      - getAllOrdersController
+      - orderStatusController
+    - models/orderModel.test.js
 
-      **Cart**  
-         - context/cart.test.js
-         - pages/CartPage.test.js
+    **Profile**
 
-      **Category**
-         - categoryController.test.js 
-         - hooks/useCategory.test.js
-         - pages/Categories.test.js
+    - pages/user/Profile.test.js
 
-      **Payment**  
-         - controllers/productController.payment.test.js
-            - braintreeTokenController
-            - brainTreePaymentController
+    **Admin View Users**
 
-   5. Pan Xinping
+    - pages/admin/Users.test.js
 
-      **Contact**
-         - pages/Contact.test.js 
+    **Search**
 
-      **Policy** 
-         - pages/Policy.test.js
+    - components/Form/SearchInput.test.js
+    - context/search.test.js
+    - pages/Search.test.js
 
-      **General** 
-         - components/Footer.test.js
-         - components/Header.test.js
-         - components/Layout.test.js
-         - components/Spinner.test.js
-         - pages/About.test.js
-         - pages/Pagenotfound.test.js
-         - config/db.test.js
+3.  Liu Yiyang
 
-      **Home** 
-         - pages/Homepage.test.js
+    **Admin View Orders**
+
+    - pages/admin/AdminOrders.test.js
+
+    **General**
+
+    - components/UserMenu.test.js
+    - pages/user/Dashboard.test.js
+    - components/Routes/Private.js
+
+    **Model**
+
+    - models/UserModel.test.js
+    - models/ProductModel.test.js
+
+    **Product**
+
+    - pages/categoryProduct.test.js
+    - controllers/productController.test.js
+      - getProductController
+      - getSingleProductController
+      - productPhotoController
+      - productFiltersController
+      - productCountController
+      - productListController
+      - searchProductController
+      - realtedProductController
+      - productCategoryController
+
+4.  Ng Hong Ray
+
+    **Cart**
+
+    - context/cart.test.js
+    - pages/CartPage.test.js
+
+    **Category**
+
+    - categoryController.test.js
+    - hooks/useCategory.test.js
+    - pages/Categories.test.js
+
+    **Payment**
+
+    - controllers/productController.payment.test.js
+      - braintreeTokenController
+      - brainTreePaymentController
+
+5.  Pan Xinping
+
+    **Contact**
+
+    - pages/Contact.test.js
+
+    **Policy**
+
+    - pages/Policy.test.js
+
+    **General**
+
+    - components/Footer.test.js
+    - components/Header.test.js
+    - components/Layout.test.js
+    - components/Spinner.test.js
+    - pages/About.test.js
+    - pages/Pagenotfound.test.js
+    - config/db.test.js
+
+    **Home**
+
+    - pages/Homepage.test.js
