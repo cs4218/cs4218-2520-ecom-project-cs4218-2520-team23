@@ -30,6 +30,8 @@ export default {
 		"<rootDir>/client/src/context/cart.test.js",
 		"<rootDir>/client/src/pages/**/*.test.{js,jsx,ts,tsx}",
 		"<rootDir>/client/src/components/**/*.test.{js,jsx,ts,tsx}",
+		"<rootDir>/client/src/components/**/*.integration.test.{js,jsx,ts,tsx}",
+		"<rootDir>/client/src/pages/**/*.integration.test.{js,jsx,ts,tsx}",
 	],
 
 	// jest code coverage
