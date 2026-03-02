@@ -18,6 +18,7 @@ const Header = () => {
       token: "",
     });
     localStorage.removeItem("auth");
+    toast.dismiss();
     toast.success("Logout Successfully");
   };
   return (
