@@ -131,7 +131,7 @@ describe("Integration - Guest user view", () => {
     renderCartPage();
 
     const loginBtn = await screen.findByRole("button", {
-      name: /Plase Login to checkout/i,
+      name: /Please Login to checkout/i,
     });
     expect(loginBtn).toBeInTheDocument();
     expect(screen.queryByTestId("dropin-widget")).not.toBeInTheDocument();
@@ -144,7 +144,7 @@ describe("Integration - Guest user view", () => {
     renderCartPage();
 
     const loginBtn = await screen.findByRole("button", {
-      name: /Plase Login to checkout/i,
+      name: /Please Login to checkout/i,
     });
     fireEvent.click(loginBtn);
 

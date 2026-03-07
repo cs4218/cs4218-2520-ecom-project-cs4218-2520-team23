@@ -188,7 +188,7 @@ describe("CartPage rendering (EP: auth/cart partitions)", () => {
     await setup({ auth: { user: null, token: null }, cart: [product()] });
 
     const btn = await screen.findByRole("button", {
-      name: /Plase Login to checkout/i,
+      name: /Please Login to checkout/i,
     });
     fireEvent.click(btn);
 
