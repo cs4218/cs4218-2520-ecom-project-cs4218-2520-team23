@@ -68,7 +68,7 @@ describe("client/src/pages/user/Orders.js (unit)", () => {
         _id: "o1",
         status: "Processing",
         buyer: { name: "Alice" },
-        createAt: "2020-01-01T00:00:00.000Z",
+        createdAt: "2020-01-01T00:00:00.000Z",
         payment: { success: true },
         products: [
           { _id: "p1", name: "Phone", description: longDesc, price: 999 },
@@ -96,7 +96,7 @@ describe("client/src/pages/user/Orders.js (unit)", () => {
     expect(screen.getByText("Processing")).toBeInTheDocument();
     expect(screen.getByText("Alice")).toBeInTheDocument();
 
-    // moment called with createAt and fromNow displayed
+    // moment called with createdAt and fromNow displayed
     expect(mockMoment).toHaveBeenCalledWith("2020-01-01T00:00:00.000Z");
     expect(screen.getByText("MOCK_FROM_NOW")).toBeInTheDocument();
 
@@ -163,7 +163,7 @@ describe("client/src/pages/user/Orders.js (unit)", () => {
         _id: "o1",
         status: "Shipped",
         buyer: { name: "Bob" },
-        createAt: "2020-01-01T00:00:00.000Z",
+        createdAt: "2020-01-01T00:00:00.000Z",
         // payment missing
         products: [{ _id: "p1", name: "Item", description: "desc", price: 1 }],
       },
