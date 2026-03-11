@@ -34,8 +34,16 @@ jobs:
           cd client
           npm install
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Run frontend tests
         run: npm run test:frontend
 
       - name: Run backend tests
         run: npm run test:backend
+        env:
+          JWT_SECRET: ms2-ci-secret
+
+      - name: Run UI tests
+        run: npm run test:ui
