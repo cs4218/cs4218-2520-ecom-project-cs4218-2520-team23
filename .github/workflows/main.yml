@@ -45,5 +45,5 @@ jobs:
         env:
           JWT_SECRET: ms2-ci-secret
 
-      # - name: Run UI tests
-      #   run: npm run test:ui
+      - name: Run UI tests
+        run: npm run test:ui
