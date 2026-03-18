@@ -1,7 +1,7 @@
 const { defineConfig, devices } = require("@playwright/test");
 
 module.exports = defineConfig({
-  testDir: "./e2e",
+  testMatch: ["**/tests/ui/**/*.spec.js", "**/e2e/**/*.spec.js"],
   timeout: 45 * 1000,
   expect: {
     timeout: 10 * 1000,

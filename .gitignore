@@ -7,3 +7,5 @@ node_modules
 /coverage/
 sonar-project.properties
 coverage/
+playwright-report/
+test-results/
