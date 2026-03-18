@@ -1,7 +1,7 @@
 // Ng Hong Ray A0253509A
 const { test, expect } = require("@playwright/test");
 
-test.describe("Category Lifecycle", () => {
+test.describe("Category Creation", () => {
   test("Admin Login", async ({ page }) => {
     const categories = [
       { _id: "cat-1", name: "Clothing", slug: "clothing" },
