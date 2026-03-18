@@ -28,7 +28,7 @@ jest.mock("axios");
 
 jest.mock("react-hot-toast", () => ({
 	__esModule: true,
-	default: { success: jest.fn(), error: jest.fn() },
+	default: new Proxy({}, { get: () => jest.fn() }),
 	Toaster: () => null,
 }));
 
