@@ -25,10 +25,14 @@ const buildRegisterData = () => {
 
 const fillRegisterForm = async (page, data) => {
   if (data.name !== undefined) {
-    await page.getByRole("textbox", { name: "Enter Your Name" }).fill(data.name);
+    await page
+      .getByRole("textbox", { name: "Enter Your Name" })
+      .fill(data.name);
   }
   if (data.email !== undefined) {
-    await page.getByRole("textbox", { name: "Enter Your Email" }).fill(data.email);
+    await page
+      .getByRole("textbox", { name: "Enter Your Email" })
+      .fill(data.email);
   }
   if (data.password !== undefined) {
     await page
@@ -36,7 +40,9 @@ const fillRegisterForm = async (page, data) => {
       .fill(data.password);
   }
   if (data.phone !== undefined) {
-    await page.getByRole("textbox", { name: "Enter Your Phone" }).fill(data.phone);
+    await page
+      .getByRole("textbox", { name: "Enter Your Phone" })
+      .fill(data.phone);
   }
   if (data.address !== undefined) {
     await page
@@ -72,7 +78,7 @@ const mockRegisterSuccess = async (page) => {
         message: "User Register Successfully",
         user: defaultUser,
       }),
-    })
+    }),
   );
 };
 
@@ -85,7 +91,7 @@ const mockRegisterDuplicate = async (page) => {
         success: false,
         message: "Already Register please login",
       }),
-    })
+    }),
   );
 };
 
@@ -119,7 +125,7 @@ test.describe("register errors", () => {
     await page.getByRole("button", { name: "REGISTER" }).click();
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole("status")).toContainText(
-      "Register Successfully, please login"
+      "Register Successfully, please login",
     );
 
     await mockRegisterDuplicate(page);
@@ -170,6 +176,14 @@ test.describe("register errors", () => {
   test("basic register field validation", async ({ page }) => {
     const baseData = buildRegisterData();
     await mockRegisterSuccess(page);
+
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 1);
+    const year = futureDate.getFullYear();
+    const month = String(futureDate.getMonth() + 1).padStart(2, "0");
+    const day = String(futureDate.getDate()).padStart(2, "0");
+    const futureDateString = `${year}-${month}-${day}`;
+
     const cases = [
       {
         field: "email",
@@ -180,6 +194,11 @@ test.describe("register errors", () => {
         field: "phone",
         value: "123abc",
         message: /phone must be numbers only/i,
+      },
+      {
+        field: "dob",
+        value: futureDateString,
+        message: /date of birth cannot be in the future/i,
       },
     ];
 

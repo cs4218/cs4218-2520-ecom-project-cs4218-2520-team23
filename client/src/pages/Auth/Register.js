@@ -51,7 +51,9 @@ const Register = () => {
     }
 
     if (!emailRegex.test(normalizedEmail)) {
-      toast.error("Please enter a valid email address, it should be in the form of example@example.com");
+      toast.error(
+        "Please enter a valid email address, it should be in the form of example@example.com",
+      );
       return;
     }
 
@@ -62,6 +64,15 @@ const Register = () => {
 
     if (!dobRegex.test(DOB) || Number.isNaN(Date.parse(DOB))) {
       toast.error("Please enter a valid date of birth");
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dobDate = new Date(DOB);
+
+    if (dobDate > today) {
+      toast.error("Date of birth cannot be in the future");
       return;
     }
 
