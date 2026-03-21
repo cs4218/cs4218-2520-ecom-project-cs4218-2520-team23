@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import request from "supertest";
 import { MongoMemoryServer } from "mongodb-memory-server";
+import JWT from "jsonwebtoken";
 import {
   loginController,
   registerController,
@@ -132,6 +133,28 @@ describe("authMiddleware integration", () => {
 
     expect(response.status).toBe(200);
     expect(response.text).toBe("Protected Routes");
+  });
+
+  test("expired token is rejected by requireSignIn", async () => {
+    await registerAndLogin(app, "expired-token@example.com");
+
+    const expiredToken = JWT.sign(
+      { _id: "someid" },
+      process.env.JWT_SECRET,
+      { expiresIn: "0s" }
+    );
+
+    const response = await request(app)
+      .get("/api/v1/auth/user-auth")
+      .set("Authorization", expiredToken);
+
+    expect(response.status).toBe(401);
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        success: false,
+        message: "Unauthorized or invalid token",
+      })
+    );
   });
 
   test("missing or invalid tokens are rejected by requireSignIn", async () => {
