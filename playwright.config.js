@@ -17,7 +17,7 @@ module.exports = defineConfig({
 		video: "retain-on-failure",
 	},
 	webServer: {
-		command: "npm run client --prefix client",
+		command: "npm start --prefix client",
 		port: 3000,
 		timeout: 120 * 1000,
 		reuseExistingServer: !process.env.CI,
