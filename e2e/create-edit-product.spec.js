@@ -1,14 +1,14 @@
 /*
  * Pan Xinping, A0228445B
  * -----------------------------------------------------------------------------
- * CREATE -> EDIT PRODUCT (HAPPY PATH INTEGRATION) - TEST DESIGN OVERVIEW
+ * CREATE -> EDIT -> DELETE PRODUCT (HAPPY PATH INTEGRATION) - TEST DESIGN OVERVIEW
  * -----------------------------------------------------------------------------
  *
  * Why this file exists:
  * This spec validates the critical admin lifecycle path: create a product,
- * verify it is discoverable, edit it from products list, and verify updated
- * data is visible to storefront users. It provides confidence that core admin
- * workflows remain functional end-to-end.
+ * verify it is discoverable, edit it from products list, verify updated
+ * data is visible to storefront users, and finally delete it. It provides
+ * confidence that core admin workflows remain functional end-to-end.
  *
  * What test cases are covered:
  * 1) Admin authentication and route access to creation screen.
@@ -19,6 +19,7 @@
  * 5) Admin navigation from products list into product edit page.
  * 6) Successful product update (name/description/price changes).
  * 7) Post-update navigation contract and storefront visibility of edits.
+ * 8) Admin delete action from edit page and storefront removal after delete.
  *
  * Testing decisions made:
  * - Use route mocking to emulate backend resources (auth, categories, product
@@ -37,7 +38,7 @@
  * - End-to-End Contract Testing (with mocked dependencies):
  *   * Validates API contracts and page transitions together.
  * - State Transition Testing:
- *   * Product state transitions from not-existing -> created -> updated.
+ *   * Product state transitions from not-existing -> created -> updated -> deleted.
  * - Deterministic Testing:
  *   * Network behavior is controlled, reducing flaky outcomes.
  * - Assertion Triangulation:
@@ -178,11 +179,20 @@ class UpdateProductPage {
 		return this.page.locator('button:has-text("UPDATE PRODUCT")');
 	}
 
+	deleteButton() {
+		return this.page.locator('button:has-text("DELETE PRODUCT")');
+	}
+
 	async updateProduct(data) {
 		await this.nameInput().fill(data.name);
 		await this.descriptionInput().fill(data.description);
 		await this.priceInput().fill(data.price);
 		await this.updateButton().click();
+	}
+
+	async deleteProduct() {
+		this.page.once("dialog", (dialog) => dialog.accept());
+		await this.deleteButton().click();
 	}
 }
 
@@ -198,6 +208,10 @@ class HomePage {
 
 	async expectProductVisible(productName) {
 		await expect(this.page.getByRole("heading", { name: productName })).toBeVisible();
+	}
+
+	async expectProductNotVisible(productName) {
+		await expect(this.page.getByRole("heading", { name: productName })).toHaveCount(0);
 	}
 }
 
@@ -368,8 +382,7 @@ async function mockCreateEditProductApi(page) {
 
 		const rawBody = (await route.request().postDataBuffer())?.toString("utf8") || "";
 		const updatedName = extractFromMultipart(rawBody, "name") || products[productIndex].name;
-		const updatedDescription =
-			extractFromMultipart(rawBody, "description") || products[productIndex].description;
+		const updatedDescription = extractFromMultipart(rawBody, "description") || products[productIndex].description;
 		const updatedPrice = Number(extractFromMultipart(rawBody, "price") || products[productIndex].price);
 		products[productIndex] = {
 			...products[productIndex],
@@ -386,6 +399,31 @@ async function mockCreateEditProductApi(page) {
 				success: true,
 				message: "Product Updated Successfully",
 				product: products[productIndex],
+			}),
+		});
+	});
+
+	await page.route("**/api/v1/product/delete-product/*", async (route) => {
+		const id = route.request().url().split("/").pop();
+		const productIndex = products.findIndex((item) => item._id === id);
+
+		if (productIndex === -1) {
+			await route.fulfill({
+				status: 404,
+				contentType: "application/json",
+				body: JSON.stringify({ success: false, message: "Product not found" }),
+			});
+			return;
+		}
+
+		products.splice(productIndex, 1);
+
+		await route.fulfill({
+			status: 200,
+			contentType: "application/json",
+			body: JSON.stringify({
+				success: true,
+				message: "Product deleted successfully",
 			}),
 		});
 	});
@@ -439,5 +477,40 @@ test.describe("Create and edit product flow", () => {
 		await page.waitForFunction(() => window.location.pathname === "/dashboard/admin/products");
 		await homePage.goto();
 		await homePage.expectProductVisible(updatedProductName);
+	});
+
+	test("admin can create a product, select it from products list, and delete it", async ({ page }) => {
+		await mockCreateEditProductApi(page);
+
+		const loginPage = new LoginPage(page);
+		const createProductPage = new CreateProductPage(page);
+		const productsPage = new AdminProductsPage(page);
+		const updateProductPage = new UpdateProductPage(page);
+		const homePage = new HomePage(page);
+
+		const createdProductName = `MCP Product Delete ${Date.now()}`;
+		const adminCredentials = getAdminCredentials();
+
+		await loginPage.goto();
+		await loginPage.loginAsAdmin(adminCredentials.email, adminCredentials.password);
+		await createProductPage.goto();
+		await createProductPage.createProduct({
+			name: createdProductName,
+			description: "MCP create-delete flow description",
+			price: "79",
+			quantity: "6",
+		});
+
+		await page.waitForFunction(() => window.location.pathname === "/dashboard/admin/products");
+		await homePage.goto();
+		await homePage.expectProductVisible(createdProductName);
+
+		await productsPage.goto();
+		await productsPage.openProductForEdit(createdProductName);
+		await updateProductPage.deleteProduct();
+
+		await page.waitForFunction(() => window.location.pathname === "/dashboard/admin/products");
+		await homePage.goto();
+		await homePage.expectProductNotVisible(createdProductName);
 	});
 });
