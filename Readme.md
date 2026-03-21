@@ -288,6 +288,72 @@ In not particular order:
 
     - pages/Homepage.test.js
 
-## 7. MS1 CI URL
+## 7. MS2 Areas of Responsibility
+
+### Integration Tests
+
+1. Kevin Liu
+
+   **Backend Auth Integration**
+
+   - controllers/authController.integration.test.js
+   - middlewares/authMiddleware.integration.test.js
+
+2. Dong Cheng-Yu
+
+   **Frontend Page Integration**
+
+   - client/src/pages/CartPage.integration.test.js
+   - client/src/pages/user/Dashboard.integration.test.js
+   - client/src/pages/user/Orders.integration.test.js
+   - client/src/pages/user/Profile.integration.test.js
+
+3. Ng Hong Ray
+
+   **Category & Product Integration**
+
+   - controllers/categoryController.integration.test.js
+   - client/src/pages/CategoryProduct.integration.test.js
+   - client/src/pages/ProductDetails.integration.test.js
+
+4. Pan Xinping
+
+   **Auth & Routing Integration**
+
+   - client/src/pages/Auth/Login.integration.test.js
+   - client/src/pages/Auth/Register.integration.test.js
+   - client/src/components/Header.integration.test.js
+   - client/src/components/Routes/AdminRoute.integration.test.js
+   - client/src/components/Routes/Private.integration.test.js
+
+### UI Tests (Playwright)
+
+1. Kevin Liu
+
+   **Homepage Filters**
+
+   - e2e/homepage-filter-category.spec.js
+   - e2e/homepage-filter-price.spec.js
+   - e2e/homepage-filter-selection.spec.js
+   - e2e/homepage-filter-combined.spec.js
+   - e2e/homepage.fixtures.js
+
+2. Dong Cheng-Yu
+
+   **Cart & Checkout**
+
+   - e2e/cartAddRemove.spec.js
+   - e2e/checkoutPayment.spec.js
+
+3. Ng Hong Ray
+
+   **Category Management**
+
+   - e2e/category-edit-delete.spec.js
+   - e2e/category-entire-pipeline.spec.js
+   - e2e/category-login-create.spec.js
+   - e2e/category-select-check-items.spec.js
+
+## 8. MS1 CI URL
 
 https://github.com/cs4218/cs4218-2520-ecom-project-cs4218-2520-team23/actions/runs/22280921739/job/64451322865
