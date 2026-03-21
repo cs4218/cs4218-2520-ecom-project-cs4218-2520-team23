@@ -41,6 +41,7 @@ export const pageTwoProducts = [
 export const electronicsOnlyProducts = [pageOneProducts[0], pageTwoProducts[0]];
 export const booksOnlyProducts = [pageOneProducts[1], pageTwoProducts[1]];
 export const midPriceProducts = [pageOneProducts[1], pageTwoProducts[0]];
+export const booksMidPriceProducts = [pageOneProducts[1]];
 
 export async function mockCommonHomePageRoutes(page) {
   await page.route("**/api/v1/product/product-photo/**", async (route) => {

@@ -10,7 +10,9 @@ import {
 } from "./homepage.fixtures";
 
 test.describe("HomePage category filtering", () => {
-  test("category selections update the visible product set", async ({ page }) => {
+  test("category selections update the visible product set", async ({
+    page,
+  }) => {
     await mockCommonHomePageRoutes(page);
 
     await page.route("**/api/v1/product/product-count", async (route) => {
@@ -59,20 +61,45 @@ test.describe("HomePage category filtering", () => {
 
     const categoryFilterPanel = page.locator(".filters");
 
-    await categoryFilterPanel.locator("label", { hasText: "Electronics" }).first().click();
-    await expect(page.getByRole("heading", { name: "Alpha Phone" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Gamma Speaker" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Novel 45" })).toHaveCount(0);
+    await categoryFilterPanel
+      .locator("label", { hasText: "Electronics" })
+      .first()
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "Alpha Phone" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Gamma Speaker" }),
+    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Novel 45" })).toHaveCount(
+      0,
+    );
 
-    await categoryFilterPanel.locator("label", { hasText: "Books" }).first().click();
-    await expect(page.getByRole("heading", { name: "Alpha Phone" })).toBeVisible();
+    await categoryFilterPanel
+      .locator("label", { hasText: "Books" })
+      .first()
+      .click();
+    await expect(
+      page.getByRole("heading", { name: "Alpha Phone" }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Novel 45" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Gamma Speaker" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Notebook 25" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Gamma Speaker" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Notebook 25" }),
+    ).toBeVisible();
 
-    await categoryFilterPanel.locator("label", { hasText: "Electronics" }).first().click();
+    await categoryFilterPanel
+      .locator("label", { hasText: "Electronics" })
+      .first()
+      .click();
     await expect(page.getByRole("heading", { name: "Novel 45" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Notebook 25" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Alpha Phone" })).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "Notebook 25" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Alpha Phone" }),
+    ).toHaveCount(0);
   });
 });

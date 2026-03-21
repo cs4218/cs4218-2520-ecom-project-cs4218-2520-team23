@@ -13,12 +13,7 @@
     "test": "npm run test:backend && npm run test:frontend",
     "test:frontend": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.frontend.config.js",
     "test:backend": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.backend.config.js",
-    "test:backend:auth-integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.backend.config.js --runInBand controllers/authController.integration.test.js middlewares/authMiddleware.integration.test.js",
-    "test:ui": "playwright test",
-    "test:ui:headed": "playwright test --headed",
-    "test:ui:selection": "playwright test tests/ui/homepage-filter-selection.spec.js",
-    "test:ui:category": "playwright test tests/ui/homepage-filter-category.spec.js",
-    "test:ui:price": "playwright test tests/ui/homepage-filter-price.spec.js"
+    "test:backend:auth-integration": "node --experimental-vm-modules node_modules/jest/bin/jest.js --config jest.backend.config.js --runInBand controllers/authController.integration.test.js middlewares/authMiddleware.integration.test.js"
   },
   "keywords": [],
   "author": "RP",
