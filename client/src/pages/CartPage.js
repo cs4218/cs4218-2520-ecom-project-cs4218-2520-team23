@@ -34,14 +34,11 @@ const CartPage = () => {
     }
   };
   //detele item
-  const removeCartItem = (pid) => {
+  const removeCartItem = (indexToRemove) => {
     try {
       let myCart = [...cart];
-      // find index of item to remove
-      let index = myCart.findIndex((item) => item._id === pid);
-      // if item not found, do nothing
-      if (index === -1) return;
-      myCart.splice(index, 1);
+      if (indexToRemove < 0 || indexToRemove >= myCart.length) return;
+      myCart.splice(indexToRemove, 1);
       setCart(myCart);
       localStorage.setItem("cart", JSON.stringify(myCart));
     } catch (error) {
@@ -103,8 +100,8 @@ const CartPage = () => {
         <div className="container ">
           <div className="row ">
             <div className="col-md-7  p-0 m-0">
-              {cart?.map((p) => (
-                <div className="row card flex-row" key={p._id}>
+              {cart?.map((p, index) => (
+                <div className="row card flex-row" key={`${p._id}-${index}`}>
                   <div className="col-md-4">
                     <img
                       src={`/api/v1/product/product-photo/${p._id}`}
@@ -122,7 +119,7 @@ const CartPage = () => {
                   <div className="col-md-4 cart-remove-btn">
                     <button
                       className="btn btn-danger"
-                      onClick={() => removeCartItem(p._id)}
+                      onClick={() => removeCartItem(index)}
                     >
                       Remove
                     </button>
