@@ -9,3 +9,6 @@ sonar-project.properties
 coverage/
 playwright-report/
 test-results/
+
+# Playwright
+/playwright/.auth/

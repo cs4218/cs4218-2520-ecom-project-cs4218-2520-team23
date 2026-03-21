@@ -17,7 +17,7 @@ module.exports = defineConfig({
     video: "retain-on-failure",
   },
   webServer: {
-    command: "BROWSER=none npm run client",
+    command: "cross-env BROWSER=none npm run client",
     port: 3000,
     timeout: 120 * 1000,
     reuseExistingServer: true,

@@ -6,150 +6,153 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [DOB, setDOB] = useState("");
-  const [answer, setAnswer] = useState("");
-  const navigate = useNavigate();
+	const [name, setName] = useState("");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [phone, setPhone] = useState("");
+	const [address, setAddress] = useState("");
+	const [DOB, setDOB] = useState("");
+	const [answer, setAnswer] = useState("");
+	const navigate = useNavigate();
 
-  // form function
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const normalizedName = name.trim();
-    const normalizedEmail = email.trim();
-    const normalizedPhone = phone.trim();
-    const normalizedAddress = address.trim();
-    const normalizedAnswer = answer.trim();
+	// form function
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		const normalizedName = name.trim();
+		const normalizedEmail = email.trim();
+		const normalizedPhone = phone.trim();
+		const normalizedAddress = address.trim();
+		const normalizedAnswer = answer.trim();
 
-    if (
-      !normalizedName ||
-      !normalizedEmail ||
-      !password ||
-      !normalizedPhone ||
-      !normalizedAddress ||
-      !DOB ||
-      !normalizedAnswer
-    ) {
-      toast.error("Please fill all required fields");
-      return;
-    }
+		if (
+			!normalizedName ||
+			!normalizedEmail ||
+			!password ||
+			!normalizedPhone ||
+			!normalizedAddress ||
+			!DOB ||
+			!normalizedAnswer
+		) {
+			toast.error("Please fill all required fields");
+			return;
+		}
 
-    try {
-      const res = await axios.post("/api/v1/auth/register", {
-        name: normalizedName,
-        email: normalizedEmail,
-        password,
-        phone: normalizedPhone,
-        address: normalizedAddress,
-        DOB,
-        answer: normalizedAnswer,
-      });
-      if (res?.data?.success) {
-        toast.success("Register Successfully, please login");
-        navigate("/login");
-      } else {
-        toast.error(res?.data?.message || "Registration failed");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error(error?.response?.data?.message || "Something went wrong");
-    }
-  };
+		try {
+			const res = await axios.post("/api/v1/auth/register", {
+				name: normalizedName,
+				email: normalizedEmail,
+				password,
+				phone: normalizedPhone,
+				address: normalizedAddress,
+				DOB,
+				answer: normalizedAnswer,
+			});
+			if (res?.data?.success) {
+				toast.success("Register Successfully, please login");
+				navigate("/login");
+			} else {
+				toast.error(res?.data?.message || "Registration failed");
+			}
+		} catch (error) {
+			console.error(error);
+			toast.error(error?.response?.data?.message || "Something went wrong");
+		}
+	};
 
-  return (
-    <Layout title="Register - Ecommerce App">
-      <div className="form-container" style={{ minHeight: "90vh" }}>
-        <form onSubmit={handleSubmit}>
-          <h4 className="title">REGISTER FORM</h4>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="form-control"
-              id="exampleInputName1"
-              placeholder="Enter Your Name"
-              required
-              autoFocus
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="form-control"
-              id="exampleInputEmail1"
-              placeholder="Enter Your Email"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="form-control"
-              id="exampleInputPassword1"
-              placeholder="Enter Your Password"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="form-control"
-              id="exampleInputPhone1"
-              placeholder="Enter Your Phone"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="form-control"
-              id="exampleInputaddress1"
-              placeholder="Enter Your Address"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="date"
-              value={DOB}
-              onChange={(e) => setDOB(e.target.value)}
-              className="form-control"
-              id="exampleInputDOB1"
-              data-testid="dob-input"
-              placeholder="Enter Your DOB"
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <input
-              type="text"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              className="form-control"
-              id="exampleInputanswer1"
-              placeholder="What is Your Favorite sports"
-              required
-            />
-          </div>
-          <button type="submit" className="btn btn-primary">
-            REGISTER
-          </button>
-        </form>
-      </div>
-    </Layout>
-  );
+	return (
+		<Layout title="Register - Ecommerce App">
+			<div className="form-container" style={{ minHeight: "90vh" }}>
+				<form onSubmit={handleSubmit}>
+					<h4 className="title">Register</h4>
+					<div className="mb-3">
+						<input
+							type="text"
+							value={name}
+							onChange={(e) => setName(e.target.value)}
+							className="form-control"
+							id="exampleInputName1"
+							placeholder="Name"
+							required
+							autoFocus
+						/>
+					</div>
+					<div className="mb-3">
+						<input
+							type="email"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							className="form-control"
+							id="exampleInputEmail1"
+							placeholder="Email"
+							required
+						/>
+					</div>
+					<div className="mb-3">
+						<input
+							type="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							className="form-control"
+							id="exampleInputPassword1"
+							placeholder="Password"
+							required
+						/>
+					</div>
+					<div className="mb-3">
+						<input
+							type="text"
+							value={phone}
+							onChange={(e) => setPhone(e.target.value)}
+							className="form-control"
+							id="exampleInputPhone1"
+							placeholder="Phone"
+							required
+						/>
+					</div>
+					<div className="mb-3">
+						<input
+							type="text"
+							value={address}
+							onChange={(e) => setAddress(e.target.value)}
+							className="form-control"
+							id="exampleInputaddress1"
+							placeholder="Address"
+							required
+						/>
+					</div>
+					<div className="mb-3">
+						<input
+							type="date"
+							value={DOB}
+							onChange={(e) => setDOB(e.target.value)}
+							className="form-control"
+							id="exampleInputDOB1"
+							data-testid="dob-input"
+							placeholder="DOB"
+							required
+						/>
+					</div>
+					<div className="mb-3">
+						<label htmlFor="exampleInputanswer1" className="auth-visually-hidden">
+							Security Question Answer
+						</label>
+						<input
+							type="text"
+							value={answer}
+							onChange={(e) => setAnswer(e.target.value)}
+							className="form-control"
+							id="exampleInputanswer1"
+							placeholder="What is your favorite sport?"
+							required
+						/>
+					</div>
+					<button type="submit" className="btn btn-primary">
+						Register
+					</button>
+				</form>
+			</div>
+		</Layout>
+	);
 };
 
 export default Register;

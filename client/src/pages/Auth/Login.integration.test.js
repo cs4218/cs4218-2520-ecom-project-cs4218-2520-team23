@@ -73,13 +73,13 @@ function renderLogin() {
 }
 
 async function fillAndSubmitLoginForm(email = "test@example.com", password = "password123") {
-	fireEvent.change(screen.getByPlaceholderText(/Enter Your Email/i), {
+	fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?email/i), {
 		target: { value: email },
 	});
-	fireEvent.change(screen.getByPlaceholderText(/Enter Your Password/i), {
+	fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?password/i), {
 		target: { value: password },
 	});
-	fireEvent.click(screen.getByRole("button", { name: /^LOGIN$/i }));
+	fireEvent.click(screen.getByRole("button", { name: /^Log in$/i }));
 }
 
 // ---------------------------------------------------------------------------

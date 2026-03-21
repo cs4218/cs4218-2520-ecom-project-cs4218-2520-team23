@@ -76,25 +76,27 @@ function renderRegisterWithLoginRoute() {
 }
 
 async function fillAllRegisterFields() {
-	fireEvent.change(screen.getByPlaceholderText(/Enter Your Name/i), {
+	fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?name/i), {
 		target: { value: "Alice" },
 	});
-	fireEvent.change(screen.getByPlaceholderText(/Enter Your Email/i), {
+	fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?email/i), {
 		target: { value: "alice@example.com" },
 	});
-	fireEvent.change(screen.getByPlaceholderText(/Enter Your Password/i), {
+	fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?password/i), {
 		target: { value: "Password123" },
 	});
-	fireEvent.change(screen.getByPlaceholderText(/Enter Your Phone/i), {
+	fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?phone/i), {
 		target: { value: "91234567" },
 	});
-	fireEvent.change(screen.getByPlaceholderText(/Enter Your Address/i), {
+	fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?address/i), {
 		target: { value: "123 Main Street" },
 	});
 	fireEvent.change(screen.getByTestId("dob-input"), {
 		target: { value: "2000-01-01" },
 	});
-	fireEvent.change(screen.getByPlaceholderText(/What is Your Favorite sports/i), { target: { value: "Football" } });
+	fireEvent.change(screen.getByRole("textbox", { name: /security question answer/i }), {
+		target: { value: "Football" },
+	});
 }
 
 // ---------------------------------------------------------------------------
@@ -119,15 +121,15 @@ describe("Level 5 — Register + React Router + Login integration", () => {
 		renderRegisterWithLoginRoute();
 
 		// Confirm we start on the Register page.
-		expect(screen.getByRole("heading", { name: /REGISTER FORM/i })).toBeInTheDocument();
+		expect(screen.getByRole("heading", { name: /REGISTER/i })).toBeInTheDocument();
 
 		await fillAllRegisterFields();
 		fireEvent.click(screen.getByRole("button", { name: /^REGISTER$/i }));
 
 		// After the real router navigation, the Login page must render.
-		await waitFor(() => expect(screen.getByRole("heading", { name: /LOGIN FORM/i })).toBeInTheDocument());
+		await waitFor(() => expect(screen.getByRole("heading", { name: /Login/i })).toBeInTheDocument());
 		// Register form must no longer be visible.
-		expect(screen.queryByRole("heading", { name: /REGISTER FORM/i })).not.toBeInTheDocument();
+		expect(screen.queryByRole("heading", { name: /REGISTER/i })).not.toBeInTheDocument();
 	});
 
 	// When the API returns { success: false }, Register must not navigate.
@@ -145,8 +147,8 @@ describe("Level 5 — Register + React Router + Login integration", () => {
 		await waitFor(() => expect(axios.post).toHaveBeenCalled());
 
 		// Must still be on the Register page.
-		expect(screen.getByRole("heading", { name: /REGISTER FORM/i })).toBeInTheDocument();
-		expect(screen.queryByRole("heading", { name: /LOGIN FORM/i })).not.toBeInTheDocument();
+		expect(screen.getByRole("heading", { name: /REGISTER/i })).toBeInTheDocument();
+		expect(screen.queryByRole("heading", { name: /Login/i })).not.toBeInTheDocument();
 	});
 
 	test("network error —> no navigation, Register page stays visible", async () => {
@@ -159,8 +161,8 @@ describe("Level 5 — Register + React Router + Login integration", () => {
 
 		await waitFor(() => expect(axios.post).toHaveBeenCalled());
 
-		expect(screen.getByRole("heading", { name: /REGISTER FORM/i })).toBeInTheDocument();
-		expect(screen.queryByRole("heading", { name: /LOGIN FORM/i })).not.toBeInTheDocument();
+		expect(screen.getByRole("heading", { name: /REGISTER/i })).toBeInTheDocument();
+		expect(screen.queryByRole("heading", { name: /LOG\s?IN/i })).not.toBeInTheDocument();
 	});
 
 	// When a required field is left blank, Register's client-side guard returns early
@@ -170,29 +172,31 @@ describe("Level 5 — Register + React Router + Login integration", () => {
 		renderRegisterWithLoginRoute();
 
 		// Fill all fields except name (left blank).
-		fireEvent.change(screen.getByPlaceholderText(/Enter Your Email/i), {
+		fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?email/i), {
 			target: { value: "bob@example.com" },
 		});
-		fireEvent.change(screen.getByPlaceholderText(/Enter Your Password/i), {
+		fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?password/i), {
 			target: { value: "Password123" },
 		});
-		fireEvent.change(screen.getByPlaceholderText(/Enter Your Phone/i), {
+		fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?phone/i), {
 			target: { value: "81234567" },
 		});
-		fireEvent.change(screen.getByPlaceholderText(/Enter Your Address/i), {
+		fireEvent.change(screen.getByPlaceholderText(/(enter\s+your\s+)?address/i), {
 			target: { value: "456 Side Street" },
 		});
 		fireEvent.change(screen.getByTestId("dob-input"), {
 			target: { value: "1995-06-15" },
 		});
-		fireEvent.change(screen.getByPlaceholderText(/What is Your Favorite sports/i), { target: { value: "Tennis" } });
+		fireEvent.change(screen.getByRole("textbox", { name: /security question answer/i }), {
+			target: { value: "Tennis" },
+		});
 
 		fireEvent.click(screen.getByRole("button", { name: /^REGISTER$/i }));
 
 		// Client-side guard fires — no API call should have been made.
 		expect(axios.post).not.toHaveBeenCalled();
 		// Register form stays; Login form never mounts.
-		expect(screen.getByRole("heading", { name: /REGISTER FORM/i })).toBeInTheDocument();
-		expect(screen.queryByRole("heading", { name: /LOGIN FORM/i })).not.toBeInTheDocument();
+		expect(screen.getByRole("heading", { name: /REGISTER/i })).toBeInTheDocument();
+		expect(screen.queryByRole("heading", { name: /LOG\s?IN/i })).not.toBeInTheDocument();
 	});
 });
