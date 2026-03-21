@@ -397,6 +397,49 @@ describe("Integration - Removing an item updates CartContext and localStorage", 
       await screen.findByText(/Total\s*:\s*\$20\.00/i),
     ).toBeInTheDocument();
   });
+
+  test("duplicate IDs: removing the second duplicate keeps the first duplicate", async () => {
+    const firstDuplicate = makeProduct({
+      _id: "dup-1",
+      name: "Duplicate First",
+      price: 10.0,
+    });
+    const secondDuplicate = makeProduct({
+      _id: "dup-1",
+      name: "Duplicate Second",
+      price: 20.0,
+    });
+    const unique = makeProduct({ _id: "uniq-1", name: "Unique Item", price: 30.0 });
+
+    seedLocalStorage({
+      auth: {
+        user: { name: "Nina", address: "9 St" },
+        token: "valid-jwt-token",
+      },
+      cart: [firstDuplicate, secondDuplicate, unique],
+    });
+    mockAxios();
+
+    renderCartPage();
+
+    expect(await screen.findByText("Duplicate First")).toBeInTheDocument();
+    expect(screen.getByText("Duplicate Second")).toBeInTheDocument();
+
+    const removeBtns = screen.getAllByRole("button", { name: /Remove/i });
+    fireEvent.click(removeBtns[1]);
+
+    await waitFor(() =>
+      expect(screen.queryByText("Duplicate Second")).not.toBeInTheDocument(),
+    );
+
+    expect(screen.getByText("Duplicate First")).toBeInTheDocument();
+    expect(screen.getByText("Unique Item")).toBeInTheDocument();
+
+    const stored = JSON.parse(localStorage.getItem("cart") ?? "[]");
+    expect(stored).toHaveLength(2);
+    expect(stored[0].name).toBe("Duplicate First");
+    expect(stored[1].name).toBe("Unique Item");
+  });
 });
 
 describe("Integration - Successful payment clears cart and navigates", () => {
