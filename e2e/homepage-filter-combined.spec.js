@@ -62,7 +62,9 @@ test.describe("HomePage combined category and price filtering", () => {
 
     await gotoHomePage(page);
 
-    await expect(page.getByRole("heading", { name: "Alpha Phone" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Alpha Phone" }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Novel 45" })).toBeVisible();
 
     const filterPanel = page.locator(".filters");
@@ -70,13 +72,24 @@ test.describe("HomePage combined category and price filtering", () => {
     // Apply category filter first
     await filterPanel.locator("label", { hasText: "Books" }).first().click();
     await expect(page.getByRole("heading", { name: "Novel 45" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Notebook 25" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Alpha Phone" })).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "Notebook 25" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Alpha Phone" }),
+    ).toHaveCount(0);
 
     // Now also apply price filter — intersection should narrow results further
-    await filterPanel.locator("label", { hasText: "$40 to 59" }).first().click();
+    await filterPanel
+      .locator("label", { hasText: "$40 to 59" })
+      .first()
+      .click();
     await expect(page.getByRole("heading", { name: "Novel 45" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Notebook 25" })).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Alpha Phone" })).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "Notebook 25" }),
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "Alpha Phone" }),
+    ).toHaveCount(0);
   });
 });
