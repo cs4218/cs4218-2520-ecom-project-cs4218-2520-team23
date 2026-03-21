@@ -23,7 +23,6 @@ Virtual Vault is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) e-co
 ### 1. Installing Node.js
 
 1. **Download and Install Node.js**:
-
    - Visit [nodejs.org](https://nodejs.org) to download and install Node.js.
 
 2. **Verify Installation**:
@@ -36,26 +35,21 @@ Virtual Vault is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) e-co
 ### 2. MongoDB Setup
 
 1. **Download and Install MongoDB Compass**:
-
    - Visit [MongoDB Compass](https://www.mongodb.com/products/tools/compass) and download and install MongoDB Compass for your operating system.
 
 2. **Create a New Cluster**:
-
    - Sign up or log in to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register).
    - After logging in, create a project and within that project deploy a free cluster.
 
 3. **Configure Database Access**:
-
    - Create a new user for your database (if not alredy done so) in MongoDB Atlas.
    - Navigate to "Database Access" under "Security" and create a new user with the appropriate permissions.
 
 4. **Whitelist IP Address**:
-
    - Go to "Network Access" under "Security" and whitelist your IP address to allow access from your machine.
    - For example, you could whitelist 0.0.0.0 to allow access from anywhere for ease of use.
 
 5. **Connect to the Database**:
-
    - In your cluster's page on MongoDB Atlas, click on "Connect" and choose "Compass".
    - Copy the connection string.
 
@@ -67,7 +61,6 @@ Virtual Vault is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) e-co
 To download and use the MERN (MongoDB, Express.js, React.js, Node.js) app from GitHub, follow these general steps:
 
 1. **Clone the Repository**
-
    - Go to the GitHub repository of the MERN app.
    - Click on the "Code" button and copy the URL of the repository.
    - Open your terminal or command prompt.
@@ -78,7 +71,6 @@ To download and use the MERN (MongoDB, Express.js, React.js, Node.js) app from G
    - Navigate into the cloned directory.
 
 2. **Install Frontend and Backend Dependencies**
-
    - Run the following command in your project's root directory:
 
      ```
@@ -86,14 +78,12 @@ To download and use the MERN (MongoDB, Express.js, React.js, Node.js) app from G
      ```
 
 3. **Add database connection string to `.env`**
-
    - Add the connection string copied from MongoDB Atlas to the `.env` file inside the project directory (replace the necessary placeholders):
      ```env
      MONGO_URL = <connection string>
      ```
 
 4. **Adding sample data to database**
-
    - Download “Sample DB Schema” from Canvas and extract it.
    - In MongoDB Compass, create a database named `test` under your cluster.
    - Add four collections to this database: `categories`, `orders`, `products`, and `users`.
@@ -127,7 +117,6 @@ To begin unit testing with Jest in your project, follow these steps:
 3. **Run Tests**  
    Execute your tests using Jest to ensure that your components meet the expected behaviour.  
    You can run the tests by using the following command in the root of the directory:
-
    - **Frontend tests**
 
      ```bash
@@ -156,26 +145,21 @@ In not particular order:
 1.  Dong Cheng-Yu
 
     **Protected Routes**
-
     - AdminRoute.test.js
     - authMiddleware.test.js
     - authHelper.test.js
     - controllers/authController.test.js
 
     **Registration**
-
     - pages/Auth/Register.test.js
 
     **Login**
-
     - pages/Auth/Login.test.js
 
     **General**
-
     - Private.test.js
 
     **Admin Actions**
-
     - createCategory.test.js
     - createProduct.test.js
     - updateProduct.test.js
@@ -183,7 +167,6 @@ In not particular order:
 2.  Liu Shixin
 
     **Admin View Products**
-
     - pages/admin/Products.test.js
     - controllers/productController.part1.test.js
       - createProductController
@@ -191,7 +174,6 @@ In not particular order:
       - updateProductController
 
     **Order**
-
     - pages/user/Orders.test.js
     - controllers/authController.shixin.test.js
       - updateProfileController
@@ -201,15 +183,12 @@ In not particular order:
     - models/orderModel.test.js
 
     **Profile**
-
     - pages/user/Profile.test.js
 
     **Admin View Users**
-
     - pages/admin/Users.test.js
 
     **Search**
-
     - components/Form/SearchInput.test.js
     - context/search.test.js
     - pages/Search.test.js
@@ -217,22 +196,18 @@ In not particular order:
 3.  Liu Yiyang
 
     **Admin View Orders**
-
     - pages/admin/AdminOrders.test.js
 
     **General**
-
     - components/UserMenu.test.js
     - pages/user/Dashboard.test.js
     - components/Routes/Private.js
 
     **Model**
-
     - models/UserModel.test.js
     - models/ProductModel.test.js
 
     **Product**
-
     - pages/categoryProduct.test.js
     - controllers/productController.part2.test.js
       - getProductController
@@ -248,18 +223,15 @@ In not particular order:
 4.  Ng Hong Ray
 
     **Cart**
-
     - context/cart.test.js
     - pages/CartPage.test.js
 
     **Category**
-
     - categoryController.test.js
     - hooks/useCategory.test.js
     - pages/Categories.test.js
 
     **Payment**
-
     - controllers/productController.payment.test.js
       - braintreeTokenController
       - brainTreePaymentController
@@ -267,15 +239,12 @@ In not particular order:
 5.  Pan Xinping
 
     **Contact**
-
     - pages/Contact.test.js
 
     **Policy**
-
     - pages/Policy.test.js
 
     **General**
-
     - components/Footer.test.js
     - components/Header.test.js
     - components/Layout.test.js
@@ -285,24 +254,21 @@ In not particular order:
     - config/db.test.js
 
     **Home**
-
     - pages/Homepage.test.js
 
 ## 7. MS2 Areas of Responsibility
 
 ### Integration Tests
 
-1. Kevin Liu
+1. Liu Shixin
 
    **Backend Auth Integration**
-
    - controllers/authController.integration.test.js
    - middlewares/authMiddleware.integration.test.js
 
 2. Dong Cheng-Yu
 
    **Frontend Page Integration**
-
    - client/src/pages/CartPage.integration.test.js
    - client/src/pages/user/Dashboard.integration.test.js
    - client/src/pages/user/Orders.integration.test.js
@@ -311,7 +277,6 @@ In not particular order:
 3. Ng Hong Ray
 
    **Category & Product Integration**
-
    - controllers/categoryController.integration.test.js
    - client/src/pages/CategoryProduct.integration.test.js
    - client/src/pages/ProductDetails.integration.test.js
@@ -319,7 +284,6 @@ In not particular order:
 4. Pan Xinping
 
    **Auth & Routing Integration**
-
    - client/src/pages/Auth/Login.integration.test.js
    - client/src/pages/Auth/Register.integration.test.js
    - client/src/components/Header.integration.test.js
@@ -328,10 +292,9 @@ In not particular order:
 
 ### UI Tests (Playwright)
 
-1. Kevin Liu
+1. Liu Shixin
 
    **Homepage Filters**
-
    - e2e/homepage-filter-category.spec.js
    - e2e/homepage-filter-price.spec.js
    - e2e/homepage-filter-selection.spec.js
@@ -341,14 +304,12 @@ In not particular order:
 2. Dong Cheng-Yu
 
    **Cart & Checkout**
-
    - e2e/cartAddRemove.spec.js
    - e2e/checkoutPayment.spec.js
 
 3. Ng Hong Ray
 
    **Category Management**
-
    - e2e/category-edit-delete.spec.js
    - e2e/category-entire-pipeline.spec.js
    - e2e/category-login-create.spec.js
