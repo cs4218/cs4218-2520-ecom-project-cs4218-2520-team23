@@ -86,6 +86,29 @@ describe("authController integration", () => {
     );
   });
 
+  test("login returns 404 when email is not registered", async () => {
+    const response = await request(app)
+      .post("/api/v1/auth/login")
+      .send({ email: "nobody@example.com", password: "anything" });
+
+    expect(response.status).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Email is not registered");
+    expect(response.body.token).toBeUndefined();
+  });
+
+  test("register rejects duplicate email with 409", async () => {
+    await request(app).post("/api/v1/auth/register").send(validUser);
+
+    const response = await request(app)
+      .post("/api/v1/auth/register")
+      .send(validUser);
+
+    expect(response.status).toBe(409);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe("Already Register please login");
+  });
+
   test("login fails with 401 when the password is wrong", async () => {
     await request(app).post("/api/v1/auth/register").send(validUser);
 

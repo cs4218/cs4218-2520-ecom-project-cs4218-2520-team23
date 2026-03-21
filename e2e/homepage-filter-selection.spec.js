@@ -9,7 +9,9 @@ import {
 } from "./homepage.fixtures";
 
 test.describe("HomePage filter selection journey", () => {
-  test("load more results are replaced by filtered page-one results", async ({ page }) => {
+  test("load more results are replaced by filtered page-one results", async ({
+    page,
+  }) => {
     await mockCommonHomePageRoutes(page);
 
     await page.route("**/api/v1/product/product-count", async (route) => {
@@ -46,21 +48,38 @@ test.describe("HomePage filter selection journey", () => {
 
     await gotoHomePage(page);
 
-    await expect(page.getByRole("heading", { name: "Alpha Phone" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Alpha Phone" }),
+    ).toBeVisible();
     await expect(page.getByRole("heading", { name: "Novel 45" })).toBeVisible();
-    await expect(page.getByRole("button", { name: /load more/i })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /load more/i }),
+    ).toBeVisible();
 
     await page.getByRole("button", { name: /load more/i }).click();
 
-    await expect(page.getByRole("heading", { name: "Gamma Speaker" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Notebook 25" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Gamma Speaker" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Notebook 25" }),
+    ).toBeVisible();
 
     const categoryFilterPanel = page.locator(".filters");
-    await categoryFilterPanel.locator("label", { hasText: "Books" }).first().click();
+    await categoryFilterPanel
+      .locator("label", { hasText: "Books" })
+      .first()
+      .click();
 
     await expect(page.getByRole("heading", { name: "Novel 45" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Notebook 25" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Gamma Speaker" })).toHaveCount(0);
-    await expect(page.getByRole("button", { name: /load more/i })).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: "Notebook 25" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Gamma Speaker" }),
+    ).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /load more/i })).toHaveCount(
+      0,
+    );
   });
 });
