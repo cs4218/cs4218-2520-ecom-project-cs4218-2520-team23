@@ -254,6 +254,36 @@ describe("removeCartItem: Cart listing + remove item", () => {
       JSON.stringify([{ ...cart[1] }])
     );
   });
+
+  test("duplicate product IDs: removing second duplicate removes the clicked row only", async () => {
+    const setCart = jest.fn();
+    const cart = [
+      product({ _id: "dup", name: "Duplicate First", price: 10 }),
+      product({ _id: "dup", name: "Duplicate Second", price: 20 }),
+      product({ _id: "uniq", name: "Unique Item", price: 30 }),
+    ];
+
+    await setup({
+      auth: { user: { name: "Ray" }, token: "t" },
+      cart,
+      setCart,
+    });
+
+    const removeButtons = await screen.findAllByRole("button", { name: /Remove/i });
+    fireEvent.click(removeButtons[1]);
+
+    expect(setCart).toHaveBeenCalledWith([
+      expect.objectContaining({ _id: "dup", name: "Duplicate First" }),
+      expect.objectContaining({ _id: "uniq", name: "Unique Item" }),
+    ]);
+    expect(window.localStorage.setItem).toHaveBeenCalledWith(
+      "cart",
+      JSON.stringify([
+        { ...cart[0] },
+        { ...cart[2] },
+      ])
+    );
+  });
 });
 
 describe("totalPrice: correctness", () => {
