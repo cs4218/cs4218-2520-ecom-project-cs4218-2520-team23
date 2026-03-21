@@ -579,9 +579,15 @@ test.describe("Edit Product - Negative Paths", () => {
 
 		await loginPage.goto();
 		await loginPage.loginAsAdmin(credentials.email, credentials.password);
+		await expect
+			.poll(async () => {
+				const auth = await page.evaluate(() => JSON.parse(localStorage.getItem("auth") || "{}"));
+				return auth?.token || "";
+			})
+			.not.toBe("");
 
 		await editPage.goto("existing-product");
-		await page.waitForTimeout(1000);
+		await expect(editPage.priceInput()).toBeVisible({ timeout: 15000 });
 
 		await editPage.priceInput().clear();
 		await editPage.priceInput().fill("200");

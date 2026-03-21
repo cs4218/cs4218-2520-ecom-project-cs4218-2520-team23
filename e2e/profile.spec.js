@@ -104,6 +104,9 @@ const setupMocks = async (page) => {
   await mockBraintreeToken(page);
 };
 
+const readStoredAuthUser = async (page) =>
+  page.evaluate(() => JSON.parse(localStorage.getItem("auth") || "{}").user || {});
+
 test.describe("profile and orders", () => {
   test("non-admin can view and update profile via dashboard menu", async ({ page }) => {
     const updatedUser = {
@@ -140,12 +143,16 @@ test.describe("profile and orders", () => {
 
     await page.getByRole("button", { name: "UPDATE" }).click();
 
-    const storedAuth = await page.evaluate(() =>
-      JSON.parse(localStorage.getItem("auth") || "{}")
-    );
-    expect(storedAuth.user.name).toBe(updatedUser.name);
-    expect(storedAuth.user.phone).toBe(updatedUser.phone);
-    expect(storedAuth.user.address).toBe(updatedUser.address);
+    await expect
+      .poll(async () => {
+        const user = await readStoredAuthUser(page);
+        return user.name;
+      })
+      .toBe(updatedUser.name);
+
+    const storedUser = await readStoredAuthUser(page);
+    expect(storedUser.phone).toBe(updatedUser.phone);
+    expect(storedUser.address).toBe(updatedUser.address);
   });
 
   test("admin can update profile particulars", async ({ page }) => {
@@ -171,12 +178,16 @@ test.describe("profile and orders", () => {
       .fill(updatedAdmin.address);
     await page.getByRole("button", { name: "UPDATE" }).click();
 
-    const storedAuth = await page.evaluate(() =>
-      JSON.parse(localStorage.getItem("auth") || "{}")
-    );
-    expect(storedAuth.user.name).toBe(updatedAdmin.name);
-    expect(storedAuth.user.phone).toBe(updatedAdmin.phone);
-    expect(storedAuth.user.address).toBe(updatedAdmin.address);
+    await expect
+      .poll(async () => {
+        const user = await readStoredAuthUser(page);
+        return user.name;
+      })
+      .toBe(updatedAdmin.name);
+
+    const storedUser = await readStoredAuthUser(page);
+    expect(storedUser.phone).toBe(updatedAdmin.phone);
+    expect(storedUser.address).toBe(updatedAdmin.address);
   });
 
   test("cart update address redirects to profile for user and admin", async ({ page }) => {
