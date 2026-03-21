@@ -1,5 +1,5 @@
 // Improved by Dong Cheng-Yu, A0262348B
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "./../../components/Layout";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -14,6 +14,15 @@ const Login = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("auth");
+    const parsedAuth = storedAuth ? JSON.parse(storedAuth) : null;
+    const hasToken = auth?.token || parsedAuth?.token;
+    if (hasToken) {
+      navigate("/", { replace: true });
+    }
+  }, [auth?.token, navigate]);
 
   // form function
   const handleSubmit = async (e) => {

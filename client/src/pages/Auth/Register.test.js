@@ -3,8 +3,10 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Register from "./Register";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth";
+
+let Register;
 
 jest.mock("axios");
 jest.mock("react-hot-toast", () => ({
@@ -20,6 +22,10 @@ jest.mock("../../components/Layout", () => {
 
 jest.mock("react-router-dom", () => ({
 	useNavigate: jest.fn(),
+}));
+
+jest.mock("../../context/auth", () => ({
+  useAuth: jest.fn(),
 }));
 
 describe("Register", () => {
@@ -58,6 +64,8 @@ describe("Register", () => {
     consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
     navigateMock = jest.fn();
     useNavigate.mockReturnValue(navigateMock);
+    useAuth.mockReturnValue([{ token: "" }, jest.fn()]);
+    Register = require("./Register").default;
   });
 
   afterEach(() => {
