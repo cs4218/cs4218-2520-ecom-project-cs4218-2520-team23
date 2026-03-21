@@ -1,8 +1,9 @@
 // Improved by Dong Cheng-Yu, A0262348B
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "./../../components/Layout";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
 const Register = () => {
@@ -14,7 +15,16 @@ const Register = () => {
   const [DOB, setDOB] = useState("");
   const [answer, setAnswer] = useState("");
   const navigate = useNavigate();
+  const [auth] = useAuth();
 
+  useEffect(() => {
+    const storedAuth = localStorage.getItem("auth");
+    const parsedAuth = storedAuth ? JSON.parse(storedAuth) : null;
+    const hasToken = auth?.token || parsedAuth?.token;
+    if (hasToken) {
+      navigate("/", { replace: true });
+    }
+  }, [auth?.token, navigate]);
   // form function
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +33,9 @@ const Register = () => {
     const normalizedPhone = phone.trim();
     const normalizedAddress = address.trim();
     const normalizedAnswer = answer.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d+$/;
+    const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
 
     if (
       !normalizedName ||
@@ -34,6 +47,21 @@ const Register = () => {
       !normalizedAnswer
     ) {
       toast.error("Please fill all required fields");
+      return;
+    }
+
+    if (!emailRegex.test(normalizedEmail)) {
+      toast.error("Please enter a valid email address, it should be in the form of example@example.com");
+      return;
+    }
+
+    if (!phoneRegex.test(normalizedPhone)) {
+      toast.error("Phone must be numbers only");
+      return;
+    }
+
+    if (!dobRegex.test(DOB) || Number.isNaN(Date.parse(DOB))) {
+      toast.error("Please enter a valid date of birth");
       return;
     }
 
@@ -62,7 +90,7 @@ const Register = () => {
   return (
     <Layout title="Register - Ecommerce App">
       <div className="form-container" style={{ minHeight: "90vh" }}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <h4 className="title">REGISTER FORM</h4>
           <div className="mb-3">
             <input
