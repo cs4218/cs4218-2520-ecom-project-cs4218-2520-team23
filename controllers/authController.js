@@ -9,22 +9,22 @@ export const registerController = async (req, res) => {
     const { name, email, password, phone, address, answer } = req.body;
     //validations
     if (!name) {
-      return res.status(400).send({ success: false, message: "Name is Required" });
+      return res.send({ message: "Name is Required" });
     }
     if (!email) {
-      return res.status(400).send({ success: false, message: "Email is Required" });
+      return res.send({ message: "Email is Required" });
     }
     if (!password) {
-      return res.status(400).send({ success: false, message: "Password is Required" });
+      return res.send({ message: "Password is Required" });
     }
     if (!phone) {
-      return res.status(400).send({ success: false, message: "Phone number is Required" });
+      return res.send({ message: "Phone number is Required" });
     }
     if (!address) {
-      return res.status(400).send({ success: false, message: "Address is Required" });
+      return res.send({ message: "Address is Required" });
     }
     if (!answer) {
-      return res.status(400).send({ success: false, message: "Answer is Required" });
+      return res.send({ message: "Answer is Required" });
     }
     //check user
     const existingUser = await userModel.findOne({ email });
