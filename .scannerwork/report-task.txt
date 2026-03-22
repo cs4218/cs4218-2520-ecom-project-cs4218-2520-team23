@@ -2,5 +2,5 @@ projectKey=econ
 serverUrl=http://localhost:9000
 serverVersion=26.2.0.119303
 dashboardUrl=http://localhost:9000/dashboard?id=econ
-ceTaskId=2bc6a7ba-7b5b-4f61-81d3-bcf6dde07384
-ceTaskUrl=http://localhost:9000/api/ce/task?id=2bc6a7ba-7b5b-4f61-81d3-bcf6dde07384
+ceTaskId=31cc0f80-9171-43d1-81cd-3f2f98a44165
+ceTaskUrl=http://localhost:9000/api/ce/task?id=31cc0f80-9171-43d1-81cd-3f2f98a44165
