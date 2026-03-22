@@ -323,6 +323,11 @@ In not particular order:
 
 4. Pan Xinping
 
+   **Product Management**
+   - e2e/create-edit-product.spec.js
+   - e2e/create-product.spec.js
+   - e2e/edit-product.spec.js
+
 5. Liu Yiyang
 
    **Auth: Login/Register/Logout**
