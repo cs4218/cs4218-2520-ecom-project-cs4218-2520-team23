@@ -316,10 +316,10 @@ In not particular order:
 3. Ng Hong Ray
 
    **Category Management**
-   - e2e/category-edit-delete.spec.js
-   - e2e/category-entire-pipeline.spec.js
-   - e2e/category-login-create.spec.js
-   - e2e/category-select-check-items.spec.js
+   - e2e/CategoryEditDelete.spec.js
+   - e2e/CategoryEntirePipeline.spec.js
+   - e2e/CategoryLoginCreate.spec.js
+   - e2e/CategorySelectCheck.spec.js
 
 4. Pan Xinping
 
