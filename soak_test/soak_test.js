@@ -3,9 +3,11 @@
 // Note:
 // Please change admin@example.com role to 1 manually in DB
 // To run: 
-//  set "K6_WEB_DASHBOARD=true" 
-//  set "K6_WEB_DASHBOARD_OPEN=true"
-//  k6 run product_category_soak.js
+// $env:K6_WEB_DASHBOARD="true"
+// $env:K6_WEB_DASHBOARD_OPEN="true" 
+// $env:K6_WEB_DASHBOARD_PERIOD="5s" 
+// $env:K6_WEB_DASHBOARD_EXPORT="results/report.html"
+// k6 run soak_test.js
 
 import http from 'k6/http';
 import { check } from 'k6';
@@ -13,7 +15,7 @@ import { Rate, Counter } from 'k6/metrics';
 
 //  test config
 const BASE_URL = 'http://localhost:3000';
-const SOAK_DURATION = '10s';
+const SOAK_DURATION = '30s';
 const REQUEST_RATE = 10;          // iterations per second
 const PRE_ALLOCATED_VUS = 20;
 const MAX_VUS = 100;
@@ -77,16 +79,16 @@ const PROFILE_UPDATES = [
 ];
 
 const AUTH_ENDPOINT_WEIGHTS = [
-  { name: 'login',           weight: 35 },
-  { name: 'userAuth',        weight: 25 },
-  { name: 'profileUpdate',   weight: 20 },
-  { name: 'forgotPassword',  weight: 10 },
-  { name: 'adminAuth',       weight:  5 },
-  { name: 'register',        weight:  0 }, // set to 0 since we generate unique emails in doRegister()
+  { name: 'login', weight: 35 },
+  { name: 'userAuth', weight: 25 },
+  { name: 'profileUpdate', weight: 20 },
+  { name: 'forgotPassword', weight: 10 },
+  { name: 'adminAuth', weight: 5 },
+  { name: 'register', weight: 0 }, // set to 0 since we generate unique emails in doRegister()
 ];
 
 // Per-VU token cache (reset each VU lifecycle)
-let vuUserToken  = null;
+let vuUserToken = null;
 let vuAdminToken = null;
 
 //  metrics
@@ -95,7 +97,7 @@ export const endpointFailures = new Rate('endpoint_failures');
 export const endpointCalls = new Counter('endpoint_calls');
 // authentication-related metrics
 export const authEndpointFailures = new Rate('auth_endpoint_failures');
-export const authEndpointCalls    = new Counter('auth_endpoint_calls');
+export const authEndpointCalls = new Counter('auth_endpoint_calls');
 
 // k6 options
 export const options = {
@@ -142,19 +144,19 @@ export const options = {
     'http_req_failed{endpoint:getProductByCategory}': ['rate<0.01'],
     'http_req_failed{endpoint:searchProducts}': ['rate<0.01'],
     // auth endpoints
-    'http_req_duration{endpoint:login}':          ['p(95)<1000', 'p(99)<2000'],
-    'http_req_duration{endpoint:register}':        ['p(95)<2000', 'p(99)<4000'],
-    'http_req_duration{endpoint:forgotPassword}':  ['p(95)<1500', 'p(99)<3000'],
-    'http_req_duration{endpoint:userAuth}':        ['p(95)<800',  'p(99)<1500'],
-    'http_req_duration{endpoint:adminAuth}':       ['p(95)<800',  'p(99)<1500'],
-    'http_req_duration{endpoint:profileUpdate}':   ['p(95)<1200', 'p(99)<2500'],
+    'http_req_duration{endpoint:login}': ['p(95)<1000', 'p(99)<2000'],
+    'http_req_duration{endpoint:register}': ['p(95)<2000', 'p(99)<4000'],
+    'http_req_duration{endpoint:forgotPassword}': ['p(95)<1500', 'p(99)<3000'],
+    'http_req_duration{endpoint:userAuth}': ['p(95)<800', 'p(99)<1500'],
+    'http_req_duration{endpoint:adminAuth}': ['p(95)<800', 'p(99)<1500'],
+    'http_req_duration{endpoint:profileUpdate}': ['p(95)<1200', 'p(99)<2500'],
 
-    'http_req_failed{endpoint:login}':             ['rate<0.01'],
-    'http_req_failed{endpoint:register}':          ['rate<0.01'],
-    'http_req_failed{endpoint:forgotPassword}':    ['rate<0.01'],
-    'http_req_failed{endpoint:userAuth}':          ['rate<0.01'],
-    'http_req_failed{endpoint:adminAuth}':         ['rate<0.01'],
-    'http_req_failed{endpoint:profileUpdate}':     ['rate<0.01'],
+    'http_req_failed{endpoint:login}': ['rate<0.01'],
+    'http_req_failed{endpoint:register}': ['rate<0.01'],
+    'http_req_failed{endpoint:forgotPassword}': ['rate<0.01'],
+    'http_req_failed{endpoint:userAuth}': ['rate<0.01'],
+    'http_req_failed{endpoint:adminAuth}': ['rate<0.01'],
+    'http_req_failed{endpoint:profileUpdate}': ['rate<0.01'],
     'http_req_failed{endpoint:tokenAcquisition}': ['rate<0.01'],
 
     auth_endpoint_failures: ['rate<0.02'],
@@ -179,20 +181,20 @@ export function productCategorySoak(data) {
 export function setup() {
   const usersToCreate = [
     ...AUTH_USERS.map((u) => ({
-      name:     u.email.split('@')[0],
-      email:    u.email,
+      name: u.email.split('@')[0],
+      email: u.email,
       password: u.password,
-      phone:    '91234567',
-      address:  '123 Test Street, Singapore',
-      answer:   'soaktest',
+      phone: '91234567',
+      address: '123 Test Street, Singapore',
+      answer: 'soaktest',
     })),
     {
-      name:     'Admin',
-      email:    AUTH_ADMIN.email,
+      name: 'Admin',
+      email: AUTH_ADMIN.email,
       password: AUTH_ADMIN.password,
-      phone:    '90000000',
-      address:  '1 Admin Road, Singapore',
-      answer:   'soaktest',
+      phone: '90000000',
+      address: '1 Admin Road, Singapore',
+      answer: 'soaktest',
     },
   ];
 
@@ -205,9 +207,9 @@ export function setup() {
         responseCallback: http.expectedStatuses(201, 409), // 409 = already exists, not a failure
       }
     );
-    if (res.status === 201)      console.log(`Setup: registered ${payload.email}`);
+    if (res.status === 201) console.log(`Setup: registered ${payload.email}`);
     else if (res.status === 409) console.log(`Setup: ${payload.email} already exists, skipping`);
-    else                         console.log(`Setup: UNEXPECTED ${payload.email} → ${res.status} | ${res.body}`);
+    else console.log(`Setup: UNEXPECTED ${payload.email} → ${res.status} | ${res.body}`);
   }
 
   // Acquire tokens — these setup() HTTP calls are excluded from all k6 metrics
@@ -222,13 +224,13 @@ export function setup() {
     { headers: { 'Content-Type': 'application/json' } }
   );
 
-  const userToken  = userLoginRes.json()?.token  || null;
+  const userToken = userLoginRes.json()?.token || null;
   const adminToken = adminLoginRes.json()?.token || null;
 
   console.log(`Setup login check: ${userLoginRes.status} | token present: ${!!userToken} | role: ${userLoginRes.json()?.user?.role}`);
   console.log(`Setup admin check: ${adminLoginRes.status} | token present: ${!!adminToken} | role: ${adminLoginRes.json()?.user?.role}`);
 
-  if (!userToken)  console.log('Setup WARNING: No user token — protected endpoints will fail');
+  if (!userToken) console.log('Setup WARNING: No user token — protected endpoints will fail');
   if (!adminToken) console.log('Setup WARNING: No admin token — admin endpoints will fail');
 
   return { userToken, adminToken };
@@ -236,17 +238,17 @@ export function setup() {
 
 // ── Auth soak scenario ──────────────────────────────────────────
 export function authSoak(data) {
-  if (!vuUserToken)  vuUserToken  = data.userToken;
+  if (!vuUserToken) vuUserToken = data.userToken;
   if (!vuAdminToken) vuAdminToken = data.adminToken;
 
   const endpoint = weightedPick(AUTH_ENDPOINT_WEIGHTS);
 
-  if (endpoint === 'login')               doLogin();
-  else if (endpoint === 'register')       doRegister();
+  if (endpoint === 'login') doLogin();
+  else if (endpoint === 'register') doRegister();
   else if (endpoint === 'forgotPassword') doForgotPassword();
-  else if (endpoint === 'userAuth')       doUserAuth();
-  else if (endpoint === 'adminAuth')      doAdminAuth();
-  else                                    doProfileUpdate();
+  else if (endpoint === 'userAuth') doUserAuth();
+  else if (endpoint === 'adminAuth') doAdminAuth();
+  else doProfileUpdate();
 }
 
 
@@ -263,12 +265,12 @@ function doLogin() {
   );
 
   const ok = check(res, {
-    'login status 200':       (r) => r.status === 200,
-    'login returns token':    (r) => {
+    'login status 200': (r) => r.status === 200,
+    'login returns token': (r) => {
       const b = safeJson(r);
       return !!(b?.token || b?.data?.token || b?.accessToken);
     },
-    'login valid JSON':       (r) => safeJson(r) !== null,
+    'login valid JSON': (r) => safeJson(r) !== null,
   });
 
   // Refresh VU token on successful login
@@ -284,12 +286,12 @@ function doRegister() {
   // Use a unique email per call to avoid duplicate-key failures
   const base = pickRandom(REGISTER_POOL);
   const payload = {
-    name:     base.name,
-    email:    `soak_${Date.now()}_${Math.random().toString(36).slice(2)}@test.com`,
+    name: base.name,
+    email: `soak_${Date.now()}_${Math.random().toString(36).slice(2)}@test.com`,
     password: base.password,
-    phone:    '91234567',
-    address:  '123 Test Street, Singapore',
-    answer:   'soaktest',
+    phone: '91234567',
+    address: '123 Test Street, Singapore',
+    answer: 'soaktest',
   };
   const params = buildParams('register');
   authEndpointCalls.add(1, { endpoint: 'register' });
@@ -302,7 +304,7 @@ function doRegister() {
 
   const ok = check(res, {
     'register status 200 or 201': (r) => r.status === 200 || r.status === 201,
-    'register valid JSON':        (r) => safeJson(r) !== null,
+    'register valid JSON': (r) => safeJson(r) !== null,
     'register has user or token': (r) => {
       const b = safeJson(r);
       return !!(b?.user || b?.data?.user || b?.token || b?.data?.token || b?.message);
@@ -320,8 +322,8 @@ function doForgotPassword() {
   const res = http.post(
     `${BASE_URL}/api/v1/auth/forgot-password`,
     JSON.stringify({
-      email:       user.email,
-      answer:      'soaktest',      // must match what was registered in setup()
+      email: user.email,
+      answer: 'soaktest',      // must match what was registered in setup()
       newPassword: user.password,   // reset back to same password so logins keep working
     }),
     { ...params, headers: { 'Content-Type': 'application/json', Accept: 'application/json' } }
@@ -384,8 +386,8 @@ function doAdminAuth() {
   );
 
   const ok = check(res, {
-    'adminAuth status 200':   (r) => r.status === 200,
-    'adminAuth valid JSON':   (r) => safeJson(r) !== null,
+    'adminAuth status 200': (r) => r.status === 200,
+    'adminAuth valid JSON': (r) => safeJson(r) !== null,
     'adminAuth ok flag true': (r) => {
       const b = safeJson(r);
       return b?.ok === true || b?.success === true || r.status === 200;
@@ -400,7 +402,7 @@ function doAdminAuth() {
 function doProfileUpdate() {
   if (!vuUserToken) return; // skip if no token yet
   const update = pickRandom(PROFILE_UPDATES);
-  const params  = buildParams('profileUpdate');
+  const params = buildParams('profileUpdate');
   authEndpointCalls.add(1, { endpoint: 'profileUpdate' });
 
   const res = http.put(
@@ -409,16 +411,16 @@ function doProfileUpdate() {
     {
       ...params,
       headers: {
-        'Content-Type':  'application/json',
-        Accept:          'application/json',
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
         Authorization: vuUserToken,
       },
     }
   );
 
   const ok = check(res, {
-    'profileUpdate status 200':      (r) => r.status === 200,
-    'profileUpdate valid JSON':      (r) => safeJson(r) !== null,
+    'profileUpdate status 200': (r) => r.status === 200,
+    'profileUpdate valid JSON': (r) => safeJson(r) !== null,
     'profileUpdate has user object': (r) => {
       const b = safeJson(r);
       return !!(b?.user || b?.data?.user || b?.updatedUser || b?.message);
@@ -658,7 +660,7 @@ export function handleSummary(data) {
     stdout: textSummary(data),
     'results/summary.json': JSON.stringify(data, null, 2),
     'results/summary.txt': textSummary(data),
-    
+
   };
 }
 
