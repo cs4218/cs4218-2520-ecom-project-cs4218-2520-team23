@@ -1,9 +1,0 @@
-=== PRODUCT/CATEGORY SOAK TEST SUMMARY ===
-http_req_duration avg: 14.43
-http_req_duration p90: 15.39
-http_req_duration p95: 43.93
-http_req_duration p99: 57.75
-http_req_failed rate: 0.00%
-checks rate: 100.00%
-http_reqs count: 100.00
-http_reqs rate: 10.00/s
