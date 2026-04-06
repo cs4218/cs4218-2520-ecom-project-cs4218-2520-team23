@@ -15,7 +15,7 @@ import { Rate, Counter } from 'k6/metrics';
 
 //  test config
 const BASE_URL = 'http://localhost:3000';
-const SOAK_DURATION = '30s';
+const SOAK_DURATION = '2h'; // 2 hours
 const REQUEST_RATE = 10;          // iterations per second
 const PRE_ALLOCATED_VUS = 20;
 const MAX_VUS = 100;
