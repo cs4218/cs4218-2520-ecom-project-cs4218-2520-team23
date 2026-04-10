@@ -109,6 +109,17 @@ describe("authController integration", () => {
     expect(response.body.message).toBe("Already Register please login");
   });
 
+  test("register returns an error message when required fields are missing", async () => {
+    const incompleteUser = { name: "No Email User" };
+
+    const response = await request(app)
+      .post("/api/v1/auth/register")
+      .send(incompleteUser);
+
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBeDefined();
+  });
+
   test("login fails with 401 when the password is wrong", async () => {
     await request(app).post("/api/v1/auth/register").send(validUser);
 
