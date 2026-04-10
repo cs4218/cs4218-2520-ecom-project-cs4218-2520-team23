@@ -6,9 +6,6 @@
 //   K6_WEB_DASHBOARD_OPEN=true \
 //   K6_WEB_DASHBOARD_PERIOD=1s \
 //   K6_WEB_DASHBOARD_EXPORT=results/spike_report.html \
-//   k6 run spike_test.js
-//
-// To run with JSON output (for chart generation):
 //   k6 run --out json=results/spike_results.json spike_test.js
 
 import http from "k6/http";
@@ -35,31 +32,31 @@ const requestCount = new Counter("total_requests");
 export const options = {
   stages: [
     // Phase 1: Warm-up — establish baseline (normal load)
-    { duration: "30s", target: 5 },
+    { duration: "30s", target: 10 },
 
-    // Phase 2: First spike — sudden surge to 50 VUs
-    { duration: "10s", target: 50 },
+    // Phase 2: First spike — sudden surge to 200 VUs
+    { duration: "10s", target: 200 },
 
     // Phase 3: Hold spike — sustain high load briefly
-    { duration: "30s", target: 50 },
+    { duration: "30s", target: 200 },
 
     // Phase 4: Spike down — sudden drop back to normal
-    { duration: "10s", target: 5 },
+    { duration: "10s", target: 10 },
 
     // Phase 5: Recovery observation — does the system recover?
-    { duration: "30s", target: 5 },
+    { duration: "30s", target: 10 },
 
-    // Phase 6: Second spike — even higher surge to 80 VUs
-    { duration: "10s", target: 80 },
+    // Phase 6: Second spike — even higher surge to 400 VUs
+    { duration: "10s", target: 400 },
 
     // Phase 7: Hold second spike
-    { duration: "30s", target: 80 },
+    { duration: "30s", target: 400 },
 
     // Phase 8: Spike down — sudden drop
-    { duration: "10s", target: 5 },
+    { duration: "10s", target: 10 },
 
     // Phase 9: Final recovery — observe system stabilization
-    { duration: "30s", target: 5 },
+    { duration: "30s", target: 10 },
 
     // Phase 10: Cool-down — ramp to 0
     { duration: "10s", target: 0 },
@@ -207,7 +204,7 @@ export default function (data) {
   }
 
   // Brief pause between iterations to simulate real user think time
-  sleep(0.5 + Math.random() * 0.5);
+  sleep(0.1 + Math.random() * 0.3);
 }
 
 // ── Scenario 1: Login (CPU-heavy due to bcrypt) ────────────────
