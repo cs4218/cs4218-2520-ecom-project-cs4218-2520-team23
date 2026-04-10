@@ -290,6 +290,12 @@ In not particular order:
    - client/src/components/Routes/AdminRoute.integration.test.js
    - client/src/components/Routes/Private.integration.test.js
 
+5. Liu Yiyang
+
+   **Admin Pages Integration (orders, create/update items)**
+   - client/src/pages/admin/AdminOrders.integration.test.js
+   - client/src/pages/admin/AdminPages.integration.test.js
+
 ### UI Tests (Playwright)
 
 1. Liu Shixin
@@ -310,10 +316,34 @@ In not particular order:
 3. Ng Hong Ray
 
    **Category Management**
-   - e2e/category-edit-delete.spec.js
-   - e2e/category-entire-pipeline.spec.js
-   - e2e/category-login-create.spec.js
-   - e2e/category-select-check-items.spec.js
+   - e2e/CategoryEditDelete.spec.js
+   - e2e/CategoryEntirePipeline.spec.js
+   - e2e/CategoryLoginCreate.spec.js
+   - e2e/CategorySelectCheck.spec.js
+
+4. Pan Xinping
+
+   **Product Management**
+   - e2e/create-edit-product.spec.js
+   - e2e/create-product.spec.js
+   - e2e/edit-product.spec.js
+
+6. Liu Yiyang
+
+   **Auth: Login/Register/Logout**
+   - e2e/auth-redirects.spec.js
+   - e2e/login-errors.spec.js
+   - e2e/login-success.spec.js
+   - e2e/logout-success.spec.js
+   - e2e/register-errors.spec.js
+   - e2e/register-success.spec.js
+   - e2e/register-login-dashboard.pipeline.spec.js (whole connected pipeline)
+
+   **User profile**
+   - e2e/profile.spec.js
+
+   **Product Details**
+   - e2e/product-details.spec.js
 
 ## 8. MS1 CI URL
 
