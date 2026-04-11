@@ -362,7 +362,7 @@ export const braintreeTokenController = async (req, res) => {
 //payment
 export const brainTreePaymentController = async (req, res) => {
   try {
-    const { nonce, cart } = req.body || {};
+    const { nonce, cart, orderId } = req.body || {};
 
     // Validation (prevents NaN totals + missing data)
     if (!nonce) return res.status(400).send({ error: "Missing payment nonce" });
@@ -389,10 +389,16 @@ export const brainTreePaymentController = async (req, res) => {
       return res.status(400).send({ error: "Cart cannot be empty" });
     }
 
+    const normalizedOrderId =
+      typeof orderId === "string" && orderId.trim().length > 0
+        ? orderId.trim()
+        : `order-${req.user._id}-${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+
     return gateway.transaction.sale(
       {
         amount: total.toFixed(2), // expects a string/decimal-like amount
         paymentMethodNonce: nonce,
+        orderId: normalizedOrderId,
         options: { submitForSettlement: true },
       },
       async (error, result) => {

@@ -1,0 +1,274 @@
+{
+    "root_group": {
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "auth-user-journey": {
+                "groups": {},
+                "checks": {
+                        "login status is 200": {
+                            "name": "login status is 200",
+                            "path": "::auth-user-journey::login status is 200",
+                            "id": "e03e83994a092dd6fe0a7552a5af4aa8",
+                            "passes": 11758,
+                            "fails": 247
+                        },
+                        "user-auth status is 200": {
+                            "name": "user-auth status is 200",
+                            "path": "::auth-user-journey::user-auth status is 200",
+                            "id": "bf1440cd1e41bbffadc4041b81b02656",
+                            "passes": 11758,
+                            "fails": 0
+                        },
+                        "profile status is 200": {
+                            "name": "profile status is 200",
+                            "path": "::auth-user-journey::profile status is 200",
+                            "id": "32afbd4fedb4e6807658969077cfdca7",
+                            "passes": 9498,
+                            "fails": 1515
+                        }
+                    },
+                "name": "auth-user-journey",
+                "path": "::auth-user-journey",
+                "id": "265cd91767ae73da7d4d5ab95056b23d"
+            }
+        },
+        "checks": {},
+        "name": "",
+        "path": ""
+    },
+    "metrics": {
+        "http_req_tls_handshaking": {
+            "p(95)": 0,
+            "p(99)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0
+        },
+        "iteration_duration": {
+            "med": 8043.4438125,
+            "max": 34280.886208,
+            "p(90)": 29687.9325964,
+            "p(95)": 31256.2068625,
+            "p(99)": 33345.044157560005,
+            "avg": 11783.929041441212,
+            "min": 653.943875
+        },
+        "vus_max": {
+            "value": 2412,
+            "min": 200,
+            "max": 2412
+        },
+        "http_req_waiting": {
+            "avg": 4177.576568438007,
+            "min": 0.199,
+            "med": 729.7845,
+            "max": 20077.684,
+            "p(90)": 14715.3575,
+            "p(95)": 19998.32925,
+            "p(99)": 20000.7505
+        },
+        "iterations": {
+            "count": 11260,
+            "rate": 38.26805446706466
+        },
+        "auth_user_auth_success_rate": {
+            "passes": 11758,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.85": false
+            },
+            "value": 1
+        },
+        "auth_token_acquired_rate": {
+            "passes": 11758,
+            "fails": 247,
+            "thresholds": {
+                "rate>0.85": false
+            },
+            "value": 0.9794252394835485
+        },
+        "auth_login_http_401_rate": {
+            "passes": 0,
+            "fails": 12005,
+            "value": 0
+        },
+        "http_req_connecting": {
+            "p(90)": 0.2335000000000008,
+            "p(95)": 0.372,
+            "p(99)": 0.5862499999999996,
+            "avg": 0.0628519093627789,
+            "min": 0,
+            "med": 0,
+            "max": 44.851
+        },
+        "http_req_duration": {
+            "avg": 4177.632451547033,
+            "min": 0.226,
+            "med": 729.8435,
+            "max": 20077.697,
+            "p(90)": 14715.4135,
+            "p(95)": 19998.393,
+            "p(99)": 20000.7595
+        },
+        "http_req_sending": {
+            "min": 0.002,
+            "med": 0.011,
+            "max": 33.204,
+            "p(90)": 0.028,
+            "p(95)": 0.045,
+            "p(99)": 0.081,
+            "avg": 0.01847754198297537
+        },
+        "http_req_blocked": {
+            "p(95)": 0.412,
+            "p(99)": 0.6462499999999997,
+            "avg": 0.07105926501033277,
+            "min": 0,
+            "med": 0.003,
+            "max": 44.896,
+            "p(90)": 0.262
+        },
+        "dropped_iterations": {
+            "count": 2312,
+            "rate": 7.8575259260971135
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(90)": 11035.6753,
+            "p(95)": 14977.125999999984,
+            "p(99)": 18978.73421,
+            "avg": 3333.1140935663752,
+            "min": 0.226,
+            "med": 499.2765,
+            "max": 19996.773
+        },
+        "auth_user_auth_latency_ms": {
+            "avg": 0.7804232012247013,
+            "min": 0.226,
+            "med": 0.518,
+            "max": 79.395,
+            "p(90)": 1.0183000000000002,
+            "p(95)": 1.5991499999999994,
+            "p(99)": 5.775879999999998,
+            "thresholds": {
+                "p(95)<999999": false
+            }
+        },
+        "checks": {
+            "passes": 33014,
+            "fails": 1762,
+            "value": 0.9493328732459168
+        },
+        "http_req_failed": {
+            "passes": 1762,
+            "fails": 33014,
+            "thresholds": {
+                "rate<0.05": true
+            },
+            "value": 0.050667126754083275
+        },
+        "auth_profile_success_rate": {
+            "fails": 1515,
+            "passes": 9498,
+            "thresholds": {
+                "rate>0.80": false
+            },
+            "value": 0.8624353037319531
+        },
+        "auth_profile_latency_ms": {
+            "max": 20077.697,
+            "p(90)": 19999.433800000003,
+            "p(95)": 20000.2904,
+            "p(99)": 20005.36332,
+            "avg": 7685.698224825224,
+            "min": 386.509,
+            "med": 4904.894,
+            "thresholds": {
+                "p(95)<999999": false
+            }
+        },
+        "auth_login_http_200_rate": {
+            "passes": 11758,
+            "fails": 247,
+            "value": 0.9794252394835485
+        },
+        "auth_user_journey_success_rate": {
+            "fails": 1762,
+            "passes": 9498,
+            "thresholds": {
+                "rate>0.75": false
+            },
+            "value": 0.8435168738898756
+        },
+        "auth_login_success_rate": {
+            "passes": 11758,
+            "fails": 247,
+            "thresholds": {
+                "rate>0.85": false
+            },
+            "value": 0.9794252394835485
+        },
+        "http_reqs": {
+            "count": 34776,
+            "rate": 118.1891529437514
+        },
+        "vus": {
+            "value": 2338,
+            "min": 7,
+            "max": 2409
+        },
+        "auth_login_latency_ms": {
+            "min": 241.218,
+            "med": 3097.063,
+            "max": 20018.828,
+            "p(90)": 12983.436400000002,
+            "p(95)": 17244.454799999992,
+            "p(99)": 19998.845960000002,
+            "avg": 5050.360297292807,
+            "thresholds": {
+                "p(95)<999999": false
+            }
+        },
+        "auth_target_rate_rps": {
+            "p(99)": 105,
+            "avg": 68.74062362112075,
+            "min": 10,
+            "med": 70,
+            "max": 105,
+            "p(90)": 100,
+            "p(95)": 105
+        },
+        "group_duration": {
+            "p(99)": 33344.66818853,
+            "avg": 11783.801326941002,
+            "min": 653.87,
+            "med": 8043.239375,
+            "max": 34280.776042,
+            "p(90)": 29687.789062500004,
+            "p(95)": 31256.06863365
+        },
+        "data_sent": {
+            "count": 12581641,
+            "rate": 42759.762262260556
+        },
+        "data_received": {
+            "count": 18732376,
+            "rate": 63663.55107153951
+        },
+        "http_req_receiving": {
+            "p(99)": 0.121,
+            "avg": 0.03740556705774009,
+            "min": 0,
+            "med": 0.028,
+            "max": 32.389,
+            "p(90)": 0.06,
+            "p(95)": 0.075
+        },
+        "auth_login_invalid_credentials_rate": {
+            "fails": 12005,
+            "passes": 0,
+            "value": 0
+        }
+    }
+}
