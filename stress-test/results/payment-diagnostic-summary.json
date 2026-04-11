@@ -1,0 +1,320 @@
+{
+    "root_group": {
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {
+            "checkout-journey": {
+                "name": "checkout-journey",
+                "path": "::checkout-journey",
+                "id": "56820699b218fe80094a1ded48b4378d",
+                "groups": {},
+                "checks": {
+                        "homepage product list status is 200": {
+                            "name": "homepage product list status is 200",
+                            "path": "::checkout-journey::homepage product list status is 200",
+                            "id": "a806c5fe378738b0280a84a4acf8db66",
+                            "passes": 40,
+                            "fails": 0
+                        },
+                        "braintree token status is 200": {
+                            "path": "::checkout-journey::braintree token status is 200",
+                            "id": "f094a5abadb6d4381d1184510b18bc5a",
+                            "passes": 40,
+                            "fails": 0,
+                            "name": "braintree token status is 200"
+                        },
+                        "login status is 200": {
+                            "path": "::checkout-journey::login status is 200",
+                            "id": "f1010b4725893eee0913a0b9531ccc4f",
+                            "passes": 40,
+                            "fails": 0,
+                            "name": "login status is 200"
+                        },
+                        "payment status is 200": {
+                            "name": "payment status is 200",
+                            "path": "::checkout-journey::payment status is 200",
+                            "id": "5aba20ba3dca3b11ed589b604d8b9507",
+                            "passes": 7,
+                            "fails": 33
+                        },
+                        "orders status is 200": {
+                            "name": "orders status is 200",
+                            "path": "::checkout-journey::orders status is 200",
+                            "id": "8acf734ad209f3673e8d019b70c362b9",
+                            "passes": 40,
+                            "fails": 0
+                        }
+                    }
+            }
+        },
+        "checks": {},
+        "name": ""
+    },
+    "metrics": {
+        "http_req_failed": {
+            "fails": 167,
+            "passes": 33,
+            "thresholds": {
+                "rate<0.99": false
+            },
+            "value": 0.165
+        },
+        "http_req_connecting": {
+            "p(99)": 0.53536,
+            "avg": 0.19628999999999994,
+            "min": 0,
+            "med": 0,
+            "max": 23.587,
+            "p(90)": 0.4079000000000001,
+            "p(95)": 0.47509999999999997
+        },
+        "data_received": {
+            "count": 352772,
+            "rate": 20608.325676646997
+        },
+        "payment_braintree_payment_latency_ms": {
+            "med": 524.6415,
+            "max": 1087.331,
+            "p(90)": 789.1442000000001,
+            "p(95)": 882.1393999999998,
+            "p(99)": 1050.6132799999998,
+            "avg": 606.162175,
+            "min": 439.761,
+            "thresholds": {
+                "p(95)<999999": false
+            }
+        },
+        "payment_homepage_latency_ms": {
+            "med": 429.15099999999995,
+            "max": 1708.379,
+            "p(90)": 457.447,
+            "p(95)": 526.7748999999981,
+            "p(99)": 1675.67282,
+            "avg": 492.30977499999983,
+            "min": 407.423,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "http_req_duration{expected_response:true}": {
+            "p(99)": 1798.4385399999996,
+            "avg": 442.33669461077864,
+            "min": 198.965,
+            "med": 356.957,
+            "max": 3409.524,
+            "p(90)": 748.4154,
+            "p(95)": 999.0895999999999
+        },
+        "payment_braintree_token_latency_ms": {
+            "p(99)": 2849.3810399999993,
+            "avg": 573.8502249999998,
+            "min": 292.093,
+            "med": 361.73850000000004,
+            "max": 3409.524,
+            "p(90)": 973.1764000000001,
+            "p(95)": 1050.2029499999983,
+            "thresholds": {
+                "p(95)<3000": false
+            }
+        },
+        "payment_order_status_latency_ms": {
+            "p(99)": 0,
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "thresholds": {
+                "p(95)<999999": false
+            }
+        },
+        "http_req_receiving": {
+            "min": 0.016,
+            "med": 0.036,
+            "max": 0.133,
+            "p(90)": 0.055,
+            "p(95)": 0.063,
+            "p(99)": 0.08005,
+            "avg": 0.03834499999999997
+        },
+        "http_req_duration": {
+            "avg": 461.5046749999999,
+            "min": 198.965,
+            "med": 412.53200000000004,
+            "max": 3409.524,
+            "p(90)": 752.2584,
+            "p(95)": 974.7957499999998,
+            "p(99)": 1711.0278099999994
+        },
+        "http_req_blocked": {
+            "p(90)": 0.4573000000000001,
+            "p(95)": 0.50905,
+            "p(99)": 0.6811,
+            "avg": 0.20746500000000057,
+            "min": 0.001,
+            "med": 0.003,
+            "max": 23.642
+        },
+        "iteration_duration": {
+            "p(90)": 3191.7543215,
+            "p(95)": 3865.31250415,
+            "p(99)": 4500.254582989999,
+            "avg": 2309.2569709249997,
+            "min": 1664.065708,
+            "med": 2099.238271,
+            "max": 4842.953417
+        },
+        "payment_orders_latency_ms": {
+            "avg": 334.35382500000003,
+            "min": 198.965,
+            "med": 220.10199999999998,
+            "max": 1529.049,
+            "p(90)": 445.69250000000005,
+            "p(95)": 503.7323999999982,
+            "p(99)": 1509.92652,
+            "thresholds": {
+                "p(95)<999999": false
+            }
+        },
+        "payment_login_success_rate": {
+            "passes": 40,
+            "fails": 0,
+            "value": 1
+        },
+        "payment_target_rate_rps": {
+            "max": 4,
+            "p(90)": 4,
+            "p(95)": 4,
+            "p(99)": 4,
+            "avg": 3.225,
+            "min": 2,
+            "med": 3
+        },
+        "payment_orders_success_rate": {
+            "passes": 40,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.80": false
+            },
+            "value": 1
+        },
+        "iterations": {
+            "count": 40,
+            "rate": 2.3367303160848363
+        },
+        "payment_homepage_success_rate": {
+            "passes": 40,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.85": false
+            },
+            "value": 1
+        },
+        "http_req_sending": {
+            "max": 0.054,
+            "p(90)": 0.035,
+            "p(95)": 0.04,
+            "p(99)": 0.051,
+            "avg": 0.015659999999999966,
+            "min": 0.006,
+            "med": 0.011
+        },
+        "payment_login_latency_ms": {
+            "p(90)": 293.4454,
+            "p(95)": 298.65659999999997,
+            "p(99)": 1008.7692899999996,
+            "avg": 300.847375,
+            "min": 249.472,
+            "med": 274.03549999999996,
+            "max": 1449.309
+        },
+        "payment_order_status_success_rate": {
+            "passes": 0,
+            "fails": 0,
+            "thresholds": {
+                "rate>0.75": false
+            },
+            "value": 0
+        },
+        "vus": {
+            "value": 1,
+            "min": 1,
+            "max": 10
+        },
+        "http_req_waiting": {
+            "p(99)": 1710.9510899999993,
+            "avg": 461.4506699999999,
+            "min": 198.894,
+            "med": 412.44,
+            "max": 3409.472,
+            "p(90)": 752.2075,
+            "p(95)": 974.7519499999999
+        },
+        "vus_max": {
+            "max": 100,
+            "value": 100,
+            "min": 100
+        },
+        "group_duration": {
+            "max": 4842.849125,
+            "p(90)": 3191.651925,
+            "p(95)": 3865.2384795,
+            "p(99)": 4500.15511763,
+            "avg": 2309.160926,
+            "min": 1663.984958,
+            "med": 2099.1474375
+        },
+        "payment_checkout_journey_success_rate": {
+            "passes": 7,
+            "fails": 33,
+            "thresholds": {
+                "rate>0.70": true
+            },
+            "value": 0.175
+        },
+        "checks": {
+            "passes": 167,
+            "fails": 33,
+            "value": 0.835
+        },
+        "payment_order_id_resolved_rate": {
+            "passes": 12,
+            "fails": 28,
+            "value": 0.3
+        },
+        "http_req_tls_handshaking": {
+            "avg": 0,
+            "min": 0,
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "p(99)": 0
+        },
+        "http_reqs": {
+            "count": 200,
+            "rate": 11.683651580424181
+        },
+        "data_sent": {
+            "rate": 3144.362731581658,
+            "count": 53825
+        },
+        "payment_braintree_token_success_rate": {
+            "fails": 0,
+            "passes": 40,
+            "thresholds": {
+                "rate>0.85": false
+            },
+            "value": 1
+        },
+        "payment_braintree_payment_success_rate": {
+            "passes": 7,
+            "fails": 33,
+            "thresholds": {
+                "rate>0.75": true
+            },
+            "value": 0.175
+        }
+    }
+}
