@@ -1,0 +1,146 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_K6",
+      "label": "K6 InfluxDB",
+      "description": "InfluxDB datasource for k6 metrics",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Virtual Users",
+      "type": "timeseries",
+      "datasource": "${DS_K6}",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "rawQuery": true,
+          "resultFormat": "time_series",
+          "query": "SELECT mean(\"value\") FROM \"autogen\".\"vus\" WHERE $timeFilter AND \"test_name\" =~ /^$test_name$/ GROUP BY time($__interval) fill(null)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Request Rate (req/s)",
+      "type": "timeseries",
+      "datasource": "${DS_K6}",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "rawQuery": true,
+          "resultFormat": "time_series",
+          "query": "SELECT non_negative_derivative(sum(\"value\"), 1s) FROM \"autogen\".\"http_reqs\" WHERE $timeFilter AND \"test_name\" =~ /^$test_name$/ GROUP BY time($__interval) fill(null)"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "HTTP Duration p95 (ms)",
+      "type": "timeseries",
+      "datasource": "${DS_K6}",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "rawQuery": true,
+          "resultFormat": "time_series",
+          "query": "SELECT percentile(\"value\",95) FROM \"autogen\".\"http_req_duration\" WHERE $timeFilter AND \"test_name\" =~ /^$test_name$/ GROUP BY time($__interval) fill(null)"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "HTTP Duration p99 (ms)",
+      "type": "timeseries",
+      "datasource": "${DS_K6}",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "rawQuery": true,
+          "resultFormat": "time_series",
+          "query": "SELECT percentile(\"value\",99) FROM \"autogen\".\"http_req_duration\" WHERE $timeFilter AND \"test_name\" =~ /^$test_name$/ GROUP BY time($__interval) fill(null)"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "HTTP Failed Rate",
+      "type": "timeseries",
+      "datasource": "${DS_K6}",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "rawQuery": true,
+          "resultFormat": "time_series",
+          "query": "SELECT mean(\"value\") FROM \"autogen\".\"http_req_failed\" WHERE $timeFilter AND \"test_name\" =~ /^$test_name$/ GROUP BY time($__interval) fill(null)"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Scenario Success Rate",
+      "type": "timeseries",
+      "datasource": "${DS_K6}",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "rawQuery": true,
+          "resultFormat": "time_series",
+          "query": "SELECT mean(\"value\") FROM \"autogen\"./^(success_rate|new_customer_success_rate|admin_product_success_rate)$/ WHERE $timeFilter AND \"test_name\" =~ /^$test_name$/ GROUP BY time($__interval), \"test_name\" fill(null)"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["k6", "combined"],
+  "templating": {
+    "list": [
+      {
+        "name": "test_name",
+        "type": "query",
+        "label": "Test Name",
+        "datasource": "${DS_K6}",
+        "refresh": 1,
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "query": "SHOW TAG VALUES FROM \"autogen\".\"http_reqs\" WITH KEY = \"test_name\"",
+        "sort": 1,
+        "current": {
+          "text": "window_shopper",
+          "value": "window_shopper"
+        }
+      }
+    ]
+  },
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "k6 - Combined Scenarios",
+  "uid": "k6-combined-scenarios",
+  "version": 1
+}
