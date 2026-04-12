@@ -344,7 +344,19 @@ In not particular order:
 
    **Product Details**
    - e2e/product-details.spec.js
+  
+## 8. MS3 Areas of Responsibility
+1. Liu Shixin
+   - Spike Testing
+3. Dong Cheng-Yu
+   - Stress Testing
+5. Ng Hong Ray
+   - Soak Testing
+7. Pan Xinping
+   - Security Testing
+9. Liu Yiyang
+    - Load Testing
 
-## 8. MS1 CI URL
+## 9. MS1 CI URL
 
 https://github.com/cs4218/cs4218-2520-ecom-project-cs4218-2520-team23/actions/runs/22280921739/job/64451322865
