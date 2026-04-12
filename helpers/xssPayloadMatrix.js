@@ -1,3 +1,5 @@
+// Written by Pan Xinping, A0228445B
+
 const maliciousTextPayloads = {
 	scriptTag: "<script>alert('xss')</script>",
 	imgOnError: '<img src=x onerror="alert(1)">',

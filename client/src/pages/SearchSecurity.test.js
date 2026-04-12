@@ -1,3 +1,5 @@
+// Written by Pan Xinping, A0228445B
+
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { jest } from "@jest/globals";
