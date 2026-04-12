@@ -1,3 +1,5 @@
+// Written by Pan Xinping, A0228445B
+
 import { jest } from "@jest/globals";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";

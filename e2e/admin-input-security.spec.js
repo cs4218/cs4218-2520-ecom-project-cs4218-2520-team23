@@ -1,3 +1,5 @@
+// Written by Pan Xinping, A0228445B
+
 import { test, expect } from "@playwright/test";
 
 const maliciousName = "<script>alert('xss')</script>";

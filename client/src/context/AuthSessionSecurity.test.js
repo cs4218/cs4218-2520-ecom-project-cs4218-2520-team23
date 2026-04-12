@@ -1,3 +1,5 @@
+// Written by Pan Xinping, A0228445B
+
 import React, { useEffect } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { jest } from "@jest/globals";

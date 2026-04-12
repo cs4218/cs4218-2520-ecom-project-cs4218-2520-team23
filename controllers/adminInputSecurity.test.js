@@ -1,3 +1,7 @@
+/*
+ * Written by Pan Xinping, A0228445B
+ */
+
 const { maliciousTextPayloads, maliciousPhotoVectors } = require("../helpers/xssPayloadMatrix.js");
 
 const mockProductSave = jest.fn();
